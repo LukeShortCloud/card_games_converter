@@ -27,18 +27,25 @@ The "Trading Card Games Converter" (TCGC) is a utility for converting pictures o
 
 # Milestones
 
-* 0.1 = Basic functions are written and working.
-* 0.2 = Programs works as a CLI utility with arguments.
-* 0.3 = Parallel processing is added.
-* 1.0 = API v1 is implemented.
+* 1.1 = All required functions are written and working.
+* 1.2 = Tests are written and all relevant exceptions are added to the code.
+* 1.3 = Programs works as a CLI utility with arguments.
+* 1.4 = Parallel processing is added.
+* 2.0 = API v1 is implemented.
 
-# Development TIme
+# Development Time
 
-* 0.1 = 1 week
-* 0.2 = 1 week
-* 0.3 = 1 week
-* 1.0 = 4 weeks
+* VERSION,TIME ESTIMATED,TIME ACTUAL
+* 1.1, 1 week
+* 1.2, 1 week
+* 1.3, 1 week
+* 1.4, 1 week
+* 2.0, 4 weeks
 
 # TDD Revision History
 
-* 2018-08-14 = Initial draft created.
+* 2018-08-14
+    * Initial draft created.
+* 2018-08-16
+    * Updated milestones versions. They no longer conflict with the original proof-of-concept version 0.1.0 shell script.
+    * Added new milestone for having tests and exceptions written.
