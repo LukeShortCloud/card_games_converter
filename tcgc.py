@@ -46,6 +46,21 @@ class TCGC:
         ppi = ceil((height_ppi + width_ppi) / 2)
         return ppi
 
+    def convert_rotate(self, image_path, degrees="90"):
+        convert_cmd_args = ['-rotate', degrees, image_path, image_path]
+        self.convert(convert_cmd_args)
+        return True
+
+    def img_rotate(self, image_path):
+
+        height, width = self.img_info(image_path)
+
+        if height > width:
+            logging.debug("Rotating image: %s" % image_path)
+            self.convert_rotate(image_path)
+
+        return True
+
     def convert(self, convert_cmd_args):
         cmd = ['convert']
 
@@ -60,13 +75,13 @@ class TCGC:
         logging.debug("convert command stderr: %s" % stderr)
         return stdout
 
-    def convert_img(self, image_path, ppi):
-        card_file_name = basename(image_path)
-        convert_cmd_args = ['-units', 'PixelsPerInch', '-density', ppi, image_path, self.tmp_dir + "/individuals/" + card_file_name]
+    def convert_img(self, image_path_src, image_path_dest, ppi):
+        card_file_name = basename(image_path_src)
+        convert_cmd_args = ['-units', 'PixelsPerInch', '-density', ppi, image_path_src, image_path_dest]
         self.convert(convert_cmd_args)
         return True
 
-    def convert_merge(self, convert_merge_method, image_paths):
+    def convert_merge(self, convert_merge_method, image_paths, merged_image_name="out.jpg"):
 
         if convert_merge_method == "vertical":
             convert_merge_arg = "-append"
@@ -77,7 +92,7 @@ class TCGC:
                           " Please use horizontal or vertical.")
             exit(1)
 
-        convert_cmd_args = [convert_merge_arg, *image_paths, self.tmp_dir + "/" + convert_merge_method + "/" + "out.jpg"]
+        convert_cmd_args = [convert_merge_arg, *image_paths, self.tmp_dir + "/" + convert_merge_method + "/" + merged_image_name]
         self.convert(convert_cmd_args) 
         return True
 
@@ -88,23 +103,28 @@ class TCGC:
         ppi = self.calc_ppi(first_img_info)
 
         for image in listdir(images_dir):
-            image_path = images_dir + "/" + image
+            image_path_src = images_dir + "/" + image
 
-            if not isdir(image_path):
+            if not isdir(image_path_src):
                 logging.debug("Convert batch processing the image: %s" % image)
-                self.convert_img(image_path, ppi)
+                card_file_name = basename(image_path_src)
+                image_path_dest = self.tmp_dir + "/individuals/" + card_file_name
+                self.convert_img(image_path_src, image_path_dest, ppi)
+                self.img_rotate(image_path_dest)
 
         return True
 
     def convert_batch_append(self):
+        total_count = 0
         image_count = 0
         image_paths = []
 
         for image in listdir(self.tmp_dir_individuals):
             image_count += 1
+            total_count += 1
 
             if image_count > 4:
-                self.convert_merge("vertical", image_paths)
+                self.convert_merge("vertical", image_paths, str(total_count) + ".jpg")
                 # Reset the count and paths if 4 cards have processed already
                 image_count = 0
                 image_paths = []
