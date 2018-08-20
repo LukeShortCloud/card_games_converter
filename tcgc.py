@@ -55,7 +55,7 @@ class TCGC:
 
         height, width = self.img_info(image_path)
 
-        if height > width:
+        if width > height:
             logging.debug("Rotating image: %s" % image_path)
             self.convert_rotate(image_path)
 
@@ -108,7 +108,7 @@ class TCGC:
             if not isdir(image_path_src):
                 logging.debug("Convert batch processing the image: %s" % image)
                 card_file_name = basename(image_path_src)
-                image_path_dest = self.tmp_dir + "/individuals/" + card_file_name
+                image_path_dest = self.tmp_dir_individuals + "/" + card_file_name
                 self.convert_img(image_path_src, image_path_dest, ppi)
                 self.img_rotate(image_path_dest)
 
@@ -129,7 +129,7 @@ class TCGC:
                 image_count = 0
                 image_paths = []
             elif image_count <= 4:
-                image_path = images_dir + "/" + image
+                image_path = self.tmp_dir_individuals + "/" + image
                 image_paths.append(image_path)
 
         return True
