@@ -118,10 +118,13 @@ class TCGC:
         total_count = 0
         image_count = 0
         image_paths = []
+        images = listdir(self.tmp_dir_individuals)
+        number_of_images = len(images)
 
-        for image in listdir(self.tmp_dir_individuals):
+        for image in images:
             image_count += 1
             total_count += 1
+            print("total_count %d" % total_count)
 
             if image_count > 4:
                 self.convert_merge("vertical", image_paths, str(total_count) + ".jpg")
@@ -131,6 +134,9 @@ class TCGC:
             elif image_count <= 4:
                 image_path = self.tmp_dir_individuals + "/" + image
                 image_paths.append(image_path)
+
+            if total_count == number_of_images:
+                self.convert_merge("vertical", image_paths, str(total_count) + ".jpg")
 
         return True
 
