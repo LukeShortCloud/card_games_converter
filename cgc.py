@@ -97,8 +97,11 @@ class CGC:
 
         """
         convert_cmd_args = ['-rotate', degrees, image_path, image_path]
-        self.convert(convert_cmd_args)
-        return True
+
+        if self.convert(convert_cmd_args)["rc"] == 0:
+            return True
+        else:
+            return False
 
     def image_rotate_by_dimensions(self, image_path):
         """Rotate an image only if the width is greater than the height.
@@ -114,9 +117,14 @@ class CGC:
 
         if width > height:
             logging.debug("Rotating image: %s", image_path)
-            self.convert_rotate(image_path)
 
-        return True
+            if self.convert_rotate(image_path):
+                return True
+            else:
+                return False
+
+        else:
+            return True
 
     def convert(self, convert_cmd_args):
         """Execute a convert command.
@@ -125,21 +133,26 @@ class CGC:
             conert_cmd_args (list): A list of arguments for the command.
 
         Returns:
-            stdout (str)
+            cmd_return (dict):
+                rc (int): return code
+                stdout (str)
+                stderr str)
 
         """
+        cmd_return = {"rc": None, "stdout": None, "stderr": None}
         cmd = ['convert']
 
         for item in convert_cmd_args:
             cmd.append(str(item))
 
         logging.debug("convert command: %s", " ".join(cmd))
-        convert_process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-        stdout, stderr = convert_process.communicate()
-        logging.debug("convert command rc: %s", convert_process.wait())
-        logging.debug("convert command stdout: %s", stdout)
-        logging.debug("convert command stderr: %s", stderr)
-        return stdout
+        convert_process = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                                           stderr=subprocess.PIPE)
+        cmd_return["stdout"], cmd_return["stderr"] = \
+            convert_process.communicate()
+        cmd_return["rc"] = int(convert_process.wait())
+        logging.debug("convert command output: %s", str(cmd_return))
+        return cmd_return
 
     def convert_image_density(self, image_path_src, image_path_dest, ppi):
         """Change the density of the pixels per inch of an image.
@@ -155,8 +168,11 @@ class CGC:
         """
         convert_cmd_args = ['-units', 'PixelsPerInch', '-density', ppi,
                             image_path_src, image_path_dest]
-        self.convert(convert_cmd_args)
-        return True
+
+        if self.convert(convert_cmd_args)["rc"] == 0:
+            return True
+        else:
+            return False
 
     def convert_merge(self, convert_merge_method, image_paths,
                       merged_image_name="out.jpg"):
@@ -185,8 +201,11 @@ class CGC:
         convert_cmd_args = [convert_merge_arg, *image_paths,
                             self.tmp_dir + "/" + convert_merge_method +
                             "/" + merged_image_name]
-        self.convert(convert_cmd_args)
-        return True
+
+        if self.convert(convert_cmd_args)["rc"] == 0:
+            return True
+        else:
+            return False
 
     def convert_batch_individual(self, images_dir):
         """Convert individual image paths from a specified path to be
@@ -209,13 +228,18 @@ class CGC:
             image_path_src = images_dir + "/" + image
 
             if not isdir(image_path_src):
-                logging.debug("Convert batch processing the image: %s", image)
+                logging.debug("Convert batch individual processing the" +
+                              " image: %s", image)
                 card_file_name = basename(image_path_src)
                 image_path_dest = (self.tmp_dir_individual + "/" +
                                    card_file_name)
-                self.convert_image_density(image_path_src,
-                                           image_path_dest, ppi)
-                self.image_rotate_by_dimensions(image_path_dest)
+
+                if not self.convert_image_density(image_path_src,
+                                                  image_path_dest, ppi):
+                    return False
+
+                if not self.image_rotate_by_dimensions(image_path_dest):
+                    return False
 
         return True
 
@@ -240,11 +264,13 @@ class CGC:
         for image in images:
             total_count += 1
             image_count += 1
-            print("total_count %d", total_count)
 
             if image_count > 4:
-                self.convert_merge("vertical", image_paths,
-                                   str(total_count) + ".jpg")
+
+                if not self.convert_merge("vertical", image_paths,
+                                          str(total_count) + ".jpg"):
+                    return False
+
                 # Reset the count and paths if 4 cards have processed already
                 image_count = 0
                 image_paths = []
@@ -253,8 +279,10 @@ class CGC:
                 image_paths.append(image_path)
 
             if total_count == number_of_images:
-                self.convert_merge("vertical", image_paths,
-                                   str(total_count) + ".jpg")
+
+                if not self.convert_merge("vertical", image_paths,
+                                          str(total_count) + ".jpg"):
+                    return False
 
         total_count = 0
         image_count = 0
@@ -268,8 +296,11 @@ class CGC:
 
             if image_count >= 2:
                 image_count = 0
-                self.convert_merge("horizontal", image_paths,
-                                   str(total_count) + ".jpg")
+
+                if not self.convert_merge("horizontal", image_paths,
+                                          str(total_count) + ".jpg"):
+                    return False
+
                 image_paths = []
 
         return True
