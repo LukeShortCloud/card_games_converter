@@ -1,13 +1,12 @@
 #!/usr/bin/python3
 
-# image processing library
-from PIL import Image
-from math import ceil
 import logging
 import subprocess
-from os.path import basename, exists, isdir
 from os import listdir, makedirs
-from sys import exit
+from os.path import basename, exists, isdir
+from math import ceil
+# image processing library
+from PIL import Image
 
 
 class CGC:
@@ -47,7 +46,7 @@ class CGC:
         """
         first_image_name = listdir(images_dir)[0]
         first_image = images_dir + "/" + first_image_name
-        logging.debug("First image found: %s" % first_image)
+        logging.debug("First image found: %s", first_image)
         return first_image
 
     def image_info(self, image_path):
@@ -80,8 +79,8 @@ class CGC:
         """
         height_ppi = image_dimensions[0] / self.height_physical_inches
         width_ppi = image_dimensions[1] / self.width_physical_inches
-        logging.debug("Height PPI = %d, Width PPI = %d" % (
-                      height_ppi, width_ppi))
+        logging.debug("Height PPI = %d, Width PPI = %d", height_ppi,
+                      width_ppi)
         # Find the average PPI and round up.
         ppi = ceil((height_ppi + width_ppi) / 2)
         return ppi
@@ -114,7 +113,7 @@ class CGC:
         height, width = self.image_info(image_path)
 
         if width > height:
-            logging.debug("Rotating image: %s" % image_path)
+            logging.debug("Rotating image: %s", image_path)
             self.convert_rotate(image_path)
 
         return True
@@ -134,12 +133,12 @@ class CGC:
         for item in convert_cmd_args:
             cmd.append(str(item))
 
-        logging.debug("convert command: %s" % " ".join(cmd))
+        logging.debug("convert command: %s", " ".join(cmd))
         convert_process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
         stdout, stderr = convert_process.communicate()
-        logging.debug("convert command rc: %s" % convert_process.wait())
-        logging.debug("convert command stdout: %s" % stdout)
-        logging.debug("convert command stderr: %s" % stderr)
+        logging.debug("convert command rc: %s", convert_process.wait())
+        logging.debug("convert command stdout: %s", stdout)
+        logging.debug("convert command stderr: %s", stderr)
         return stdout
 
     def convert_image_density(self, image_path_src, image_path_dest, ppi):
@@ -186,7 +185,7 @@ class CGC:
         convert_cmd_args = [convert_merge_arg, *image_paths,
                             self.tmp_dir + "/" + convert_merge_method +
                             "/" + merged_image_name]
-        self.convert(convert_cmd_args) 
+        self.convert(convert_cmd_args)
         return True
 
     def convert_batch_individual(self, images_dir):
@@ -210,11 +209,10 @@ class CGC:
             image_path_src = images_dir + "/" + image
 
             if not isdir(image_path_src):
-                logging.debug("Convert batch processing the image: %s"
-                               % image)
+                logging.debug("Convert batch processing the image: %s", image)
                 card_file_name = basename(image_path_src)
                 image_path_dest = (self.tmp_dir_individual + "/" +
-                                  card_file_name)
+                                   card_file_name)
                 self.convert_image_density(image_path_src,
                                            image_path_dest, ppi)
                 self.image_rotate_by_dimensions(image_path_dest)
@@ -242,11 +240,11 @@ class CGC:
         for image in images:
             total_count += 1
             image_count += 1
-            print("total_count %d" % total_count)
+            print("total_count %d", total_count)
 
             if image_count > 4:
                 self.convert_merge("vertical", image_paths,
-                                    str(total_count) + ".jpg")
+                                   str(total_count) + ".jpg")
                 # Reset the count and paths if 4 cards have processed already
                 image_count = 0
                 image_paths = []
@@ -278,6 +276,6 @@ class CGC:
 
 
 cgc = CGC()
-images_dir = "/tmp/cards"
-cgc.convert_batch_individual(images_dir)
+use_images_dir = "/tmp/cards"
+cgc.convert_batch_individual(use_images_dir)
 cgc.convert_batch_append_all()
