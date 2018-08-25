@@ -1,8 +1,8 @@
-# TCGC - Technical Design Document
+# Card Games Converter (CGC) - Technical Design Document
 
 # Description
 
-The "Trading Card Games Converter" (TCGC) is a utility for converting pictures of cards into a printable format.
+The "Card Games Converter" (CGC) is a utility for converting pictures of cards into a printable format.
 
 # Technologies
 
@@ -35,12 +35,12 @@ The "Trading Card Games Converter" (TCGC) is a utility for converting pictures o
 
 # Development Time
 
-* VERSION,TIME ESTIMATED,TIME ACTUAL
-* 1.1, 1 week
-* 1.2, 1 week
-* 1.3, 1 week
-* 1.4, 1 week
-* 2.0, 4 weeks
+* VERSION, TIME ESTIMATED, TIME ACTUAL
+    * 1.1, 1 week
+    * 1.2, 1 week
+    * 1.3, 1 week
+    * 1.4, 1 week
+    * 2.0, 4 weeks
 
 # TDD Revision History
 

@@ -10,10 +10,10 @@ from os import listdir, makedirs
 from sys import exit
 
 
-class TCGC:
+class CGC:
 
     def __init__(self, height_physical_inches=2.5, width_physical_inches=3.5):
-        """Initialize TCGC by creating temporary directories
+        """Initialize CGC by creating temporary directories
         and setting the standard phsical size of a card.
 
         Args:
@@ -24,7 +24,7 @@ class TCGC:
         logging.basicConfig(level="DEBUG")
         self.height_physical_inches = height_physical_inches
         self.width_physical_inches = width_physical_inches
-        self.tmp_dir = "/tmp/tcgc"
+        self.tmp_dir = "/tmp/cgc"
         self.tmp_dir_individual = self.tmp_dir + "/individual"
         self.tmp_dir_horizontal = self.tmp_dir + "/horizontal"
         self.tmp_dir_vertical = self.tmp_dir + "/vertical"
@@ -277,7 +277,7 @@ class TCGC:
         return True
 
 
-tcgc = TCGC()
+cgc = CGC()
 images_dir = "/tmp/cards"
-tcgc.convert_batch_individual(images_dir)
-tcgc.convert_batch_append_all()
+cgc.convert_batch_individual(images_dir)
+cgc.convert_batch_append_all()
