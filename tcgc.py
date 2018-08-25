@@ -43,7 +43,8 @@ class TCGC:
     def calc_ppi(self, image_dimensions):
         height_ppi = image_dimensions[0] / self.height_physical_inches
         width_ppi = image_dimensions[1] / self.width_physical_inches
-        logging.debug("Height PPI = %d, Width PPI = %d" % (height_ppi, width_ppi))
+        logging.debug("Height PPI = %d, Width PPI = %d" % (
+                      height_ppi, width_ppi))
         # Find the average PPI and round up.
         ppi = ceil((height_ppi + width_ppi) / 2)
         return ppi
@@ -78,11 +79,13 @@ class TCGC:
         return stdout
 
     def convert_image_density(self, image_path_src, image_path_dest, ppi):
-        convert_cmd_args = ['-units', 'PixelsPerInch', '-density', ppi, image_path_src, image_path_dest]
+        convert_cmd_args = ['-units', 'PixelsPerInch', '-density', ppi,
+                            image_path_src, image_path_dest]
         self.convert(convert_cmd_args)
         return True
 
-    def convert_merge(self, convert_merge_method, image_paths, merged_image_name="out.jpg"):
+    def convert_merge(self, convert_merge_method, image_paths,
+                      merged_image_name="out.jpg"):
         convert_merge_arg = ""
 
         if convert_merge_method == "vertical":
@@ -94,7 +97,9 @@ class TCGC:
                           " Please use horizontal or vertical.")
             exit(1)
 
-        convert_cmd_args = [convert_merge_arg, *image_paths, self.tmp_dir + "/" + convert_merge_method + "/" + merged_image_name]
+        convert_cmd_args = [convert_merge_arg, *image_paths,
+                            self.tmp_dir + "/" + convert_merge_method +
+                            "/" + merged_image_name]
         self.convert(convert_cmd_args) 
         return True
 
@@ -107,10 +112,13 @@ class TCGC:
             image_path_src = images_dir + "/" + image
 
             if not isdir(image_path_src):
-                logging.debug("Convert batch processing the image: %s" % image)
+                logging.debug("Convert batch processing the image: %s"
+                               % image)
                 card_file_name = basename(image_path_src)
-                image_path_dest = self.tmp_dir_individual + "/" + card_file_name
-                self.convert_image_density(image_path_src, image_path_dest, ppi)
+                image_path_dest = (self.tmp_dir_individual + "/" +
+                                  card_file_name)
+                self.convert_image_density(image_path_src,
+                                           image_path_dest, ppi)
                 self.image_rotate(image_path_dest)
 
         return True
@@ -128,7 +136,8 @@ class TCGC:
             print("total_count %d" % total_count)
 
             if image_count > 4:
-                self.convert_merge("vertical", image_paths, str(total_count) + ".jpg")
+                self.convert_merge("vertical", image_paths,
+                                    str(total_count) + ".jpg")
                 # Reset the count and paths if 4 cards have processed already
                 image_count = 0
                 image_paths = []
@@ -137,7 +146,8 @@ class TCGC:
                 image_paths.append(image_path)
 
             if total_count == number_of_images:
-                self.convert_merge("vertical", image_paths, str(total_count) + ".jpg")
+                self.convert_merge("vertical", image_paths,
+                                   str(total_count) + ".jpg")
 
         total_count = 0
         image_count = 0
@@ -151,7 +161,8 @@ class TCGC:
 
             if image_count >= 2:
                 image_count = 0
-                self.convert_merge("horizontal", image_paths, str(total_count) + ".jpg")
+                self.convert_merge("horizontal", image_paths,
+                                   str(total_count) + ".jpg")
                 image_paths = []
 
         return True
