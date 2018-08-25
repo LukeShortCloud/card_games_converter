@@ -12,10 +12,18 @@ from sys import exit
 
 class TCGC:
 
-    def __init__(self):
+    def __init__(self, height_physical_inches=2.5, width_physical_inches=3.5):
+        """Initialize TCGC by creating temporary directories
+        and setting the standard phsical size of a card.
+
+        Args:
+            height_physical_inches (int)
+            width_physical_inches (int)
+
+        """
         logging.basicConfig(level="DEBUG")
-        self.height_physical_inches = 2.5
-        self.width_physical_inches = 3.5
+        self.height_physical_inches = height_physical_inches
+        self.width_physical_inches = width_physical_inches
         self.tmp_dir = "/tmp/tcgc"
         self.tmp_dir_individual = self.tmp_dir + "/individual"
         self.tmp_dir_horizontal = self.tmp_dir + "/horizontal"
@@ -28,12 +36,30 @@ class TCGC:
             makedirs(self.tmp_dir_vertical)
 
     def find_first_image(self, images_dir):
+        """Locate the first image in a directory.
+
+        Args:
+            images_dir (str)
+
+        Returns:
+            first_image (str)
+
+        """
         first_image_name = listdir(images_dir)[0]
         first_image = images_dir + "/" + first_image_name
         logging.debug("First image found: %s" % first_image)
         return first_image
 
     def image_info(self, image_path):
+        """Return the dimensions of an image.
+
+        Args:
+            image_path (str)
+
+        Returns:
+            list: height, width
+
+        """
 
         with Image.open(image_path) as image:
             height, width = image.size
@@ -41,6 +67,17 @@ class TCGC:
         return height, width
 
     def calc_ppi(self, image_dimensions):
+        """Calculate the pixels per inch density based on the desired
+        physical dimensions of an image and the virtual dimensions of
+        an image.
+
+        Args:
+            image_dimensions (list): height, width
+
+        Returns:
+            ppi (int)
+
+        """
         height_ppi = image_dimensions[0] / self.height_physical_inches
         width_ppi = image_dimensions[1] / self.width_physical_inches
         logging.debug("Height PPI = %d, Width PPI = %d" % (
@@ -50,12 +87,30 @@ class TCGC:
         return ppi
 
     def convert_rotate(self, image_path, degrees="90"):
+        """Execute the convert command to rotate an image.
+
+        Args:
+            image_path (str)
+            degrees (int)
+
+        Returns:
+            boolean: If the convert command completed successfully.
+
+        """
         convert_cmd_args = ['-rotate', degrees, image_path, image_path]
         self.convert(convert_cmd_args)
         return True
 
-    def image_rotate(self, image_path):
+    def image_rotate_by_dimensions(self, image_path):
+        """Rotate an image only if the width is greater than the height.
 
+        Args:
+            image_path (str)
+
+        Returns:
+            boolean: If the image was successfully rotated.
+
+        """
         height, width = self.image_info(image_path)
 
         if width > height:
@@ -65,6 +120,15 @@ class TCGC:
         return True
 
     def convert(self, convert_cmd_args):
+        """Execute a convert command.
+
+        Args:
+            conert_cmd_args (list): A list of arguments for the command.
+
+        Returns:
+            stdout (str)
+
+        """
         cmd = ['convert']
 
         for item in convert_cmd_args:
@@ -79,6 +143,17 @@ class TCGC:
         return stdout
 
     def convert_image_density(self, image_path_src, image_path_dest, ppi):
+        """Change the density of the pixels per inch of an image.
+
+        Args:
+            image_path_src (str): The original full image path to convert
+            image_path_dest (str): The new full image path to save to
+            ppi (int): The desired pixels per inch density
+
+        Returns:
+            boolean: If the convert density command finished successfully
+
+        """
         convert_cmd_args = ['-units', 'PixelsPerInch', '-density', ppi,
                             image_path_src, image_path_dest]
         self.convert(convert_cmd_args)
@@ -86,6 +161,17 @@ class TCGC:
 
     def convert_merge(self, convert_merge_method, image_paths,
                       merged_image_name="out.jpg"):
+        """Merge one or more images either vertically or horizontally.
+
+        Args:
+            convert_merge_method (str): vertical or horizontal
+            image_paths (list)
+            merged_image_name (str): the name to save the merged image as
+
+        Returns:
+            boolean: If the convert merge command finished successfully
+
+        """
         convert_merge_arg = ""
 
         if convert_merge_method == "vertical":
@@ -104,6 +190,18 @@ class TCGC:
         return True
 
     def convert_batch_individual(self, images_dir):
+        """Convert individual image paths from a specified path to be
+        a different density and rotate them if needed. (Both the
+        "convert_image_density" and "image_rotate_by_dimensions" methods
+        are used on each image.
+
+        Args:
+            images_dir (str)
+
+        Returns:
+            boolean: If any of the convert commands failed
+
+        """
         first_image = self.find_first_image(images_dir)
         first_image_info = self.image_info(first_image)
         ppi = self.calc_ppi(first_image_info)
@@ -119,11 +217,22 @@ class TCGC:
                                   card_file_name)
                 self.convert_image_density(image_path_src,
                                            image_path_dest, ppi)
-                self.image_rotate(image_path_dest)
+                self.image_rotate_by_dimensions(image_path_dest)
 
         return True
 
     def convert_batch_append_all(self):
+        """Merge all individual cards into a printable set. The cards are
+        assumed to have already had their density changed and have been
+        rotated by the "convert_batch_individual" method.
+
+        Args:
+            None
+
+        Returns:
+            boolean: If any of the methods failed
+
+        """
         total_count = 0
         image_count = 0
         image_paths = []
