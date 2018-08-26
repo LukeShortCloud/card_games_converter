@@ -1,4 +1,8 @@
 #!/usr/bin/python3
+"""cgc provides a single class named CGC for processing card images into a
+   printable format
+
+"""
 
 import logging
 import subprocess
@@ -10,6 +14,7 @@ from PIL import Image
 
 
 class CGC:
+    """CGC provides methods for reformatting cards into printable sheets."""
 
     def __init__(self, height_physical_inches=2.5, width_physical_inches=3.5,
                  log_level="INFO"):
