@@ -30,10 +30,17 @@ class CGC:
         self.tmp_dir_vertical = self.tmp_dir + "/vertical"
 
         if not exists(self.tmp_dir):
-            makedirs(self.tmp_dir)
-            makedirs(self.tmp_dir_individual)
-            makedirs(self.tmp_dir_horizontal)
-            makedirs(self.tmp_dir_vertical)
+
+            try:
+                makedirs(self.tmp_dir)
+                makedirs(self.tmp_dir_individual)
+                makedirs(self.tmp_dir_horizontal)
+                makedirs(self.tmp_dir_vertical)
+            # Disable a false-positive error about the variable name "e"
+            # not being valid snake_case.
+            # pylint: disable=C0103
+            except IOError as e:
+                logging.critical("Failed to make temporary directories.\n%s", e)
 
     @staticmethod
     def find_first_image(images_dir):
