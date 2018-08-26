@@ -11,7 +11,8 @@ from PIL import Image
 
 class CGC:
 
-    def __init__(self, height_physical_inches=2.5, width_physical_inches=3.5):
+    def __init__(self, height_physical_inches=2.5, width_physical_inches=3.5,
+                 log_level="INFO"):
         """Initialize CGC by creating temporary directories
         and setting the standard phsical size of a card.
 
@@ -20,7 +21,7 @@ class CGC:
             width_physical_inches (int)
 
         """
-        logging.basicConfig(level="DEBUG")
+        logging.basicConfig(level=log_level)
         self.height_physical_inches = height_physical_inches
         self.width_physical_inches = width_physical_inches
         self.tmp_dir = "/tmp/cgc"
@@ -260,34 +261,38 @@ class CGC:
         image_paths = []
         images = listdir(self.tmp_dir_individual)
         number_of_images = len(images)
+        logging.debug("Number of total images found: %s", str(number_of_images))
 
         for image in images:
             total_count += 1
             image_count += 1
+            image_path = self.tmp_dir_individual + "/" + image
+            image_paths.append(image_path)
 
-            if image_count > 4:
+            if image_count >= 4:
 
                 if not self.convert_merge("vertical", image_paths,
                                           str(total_count) + ".jpg"):
                     return False
 
-                # Reset the count and paths if 4 cards have processed already
+                # Reset the count and paths if 4 cards have processed already.
                 image_count = 0
                 image_paths = []
-            elif image_count <= 4:
-                image_path = self.tmp_dir_individual + "/" + image
-                image_paths.append(image_path)
+            elif image_count < 4:
 
-            if total_count == number_of_images:
+                # If this is the last image, then merge all of the
+                # remaining images.
+                if total_count == number_of_images:
 
-                if not self.convert_merge("vertical", image_paths,
-                                          str(total_count) + ".jpg"):
-                    return False
+                    if not self.convert_merge("vertical", image_paths,
+                                              str(total_count) + ".jpg"):
+                        return False
 
         total_count = 0
         image_count = 0
         image_paths = []
         images_vertical = listdir(self.tmp_dir_vertical)
+        number_of_vertical_images = len(images_vertical)
 
         for image in images_vertical:
             total_count += 1
@@ -295,18 +300,19 @@ class CGC:
             image_paths.append(self.tmp_dir_vertical + "/" + image)
 
             if image_count >= 2:
-                image_count = 0
 
                 if not self.convert_merge("horizontal", image_paths,
                                           str(total_count) + ".jpg"):
                     return False
 
+                image_count = 0
                 image_paths = []
+            elif image_count < 2:
+
+                if total_count == number_of_vertical_images:
+
+                    if not self.convert_merge("horizontal", image_paths,
+                                              str(total_count) + ".jpg"):
+                        return False
 
         return True
-
-
-cgc = CGC()
-use_images_dir = "/tmp/cards"
-cgc.convert_batch_individual(use_images_dir)
-cgc.convert_batch_append_all()
