@@ -19,6 +19,11 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 
 # Functions
 
+* find_first_image = Locate the first image in a directory.
+    * Input
+        * images_dir (str) = The images directory to search in.
+    * Output
+        * first_image (str) = The first image found.
 * image_info = Find the resolution dimensions of an image.
     * Input
         * image_path (str) = The full path to an image.
@@ -38,18 +43,6 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
             * rc (int) = Return code.
             * stdout (str) = Standard output.
             * stderr (str) = Standard error.
-* convert_image_density = Convert a single image to a specific physical size density based on the PPI.
-    * Input
-        * image_path_src (str) = The full path to the source image to convert.
-        * image_path_dest (str) = The full path to the destination image to save as.
-        * ppi (int) = The desired pixels per inch density.
-    * Ouput
-        * boolean = If this method was successful.
-* find_first_image = Locate the first image in a directory.
-    * Input
-        * images_dir (str) = The images directory to search in.
-    * Output
-        * first_image (str) = The first image found.
 * convert_rotate = Rotate an image.
     * Input
         * image_path (str) = The full image path to use.
@@ -58,6 +51,13 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 * image_rotate_by_dimensions = Rotate an image if the width is greater than the height. This allows for stacking of images for a printable page of 8 cards.
     * Input
         * image_path (src) = The full path to the image.
+    * Ouput
+        * boolean = If this method was successful.
+* convert_image_density = Convert a single image to a specific physical size density based on the PPI.
+    * Input
+        * image_path_src (str) = The full path to the source image to convert.
+        * image_path_dest (str) = The full path to the destination image to save as.
+        * ppi (int) = The desired pixels per inch density.
     * Ouput
         * boolean = If this method was successful.
 * convert_merge = Merge one or more images together either vertically or horizontally.

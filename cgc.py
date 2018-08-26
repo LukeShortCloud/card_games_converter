@@ -85,6 +85,34 @@ class CGC:
         ppi = ceil((height_ppi + width_ppi) / 2)
         return ppi
 
+    def convert(self, convert_cmd_args):
+        """Execute a convert command.
+
+        Args:
+            convert_cmd_args (list): A list of arguments for the command.
+
+        Returns:
+            cmd_return (dict):
+                rc (int): return code
+                stdout (str)
+                stderr str)
+
+        """
+        cmd_return = {"rc": None, "stdout": None, "stderr": None}
+        cmd = ['convert']
+
+        for item in convert_cmd_args:
+            cmd.append(str(item))
+
+        logging.debug("convert command: %s", " ".join(cmd))
+        convert_process = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                                           stderr=subprocess.PIPE)
+        cmd_return["stdout"], cmd_return["stderr"] = \
+            convert_process.communicate()
+        cmd_return["rc"] = int(convert_process.wait())
+        logging.debug("convert command output: %s", str(cmd_return))
+        return cmd_return
+
     def convert_rotate(self, image_path, degrees="90"):
         """Execute the convert command to rotate an image.
 
@@ -125,34 +153,6 @@ class CGC:
 
         else:
             return True
-
-    def convert(self, convert_cmd_args):
-        """Execute a convert command.
-
-        Args:
-            conert_cmd_args (list): A list of arguments for the command.
-
-        Returns:
-            cmd_return (dict):
-                rc (int): return code
-                stdout (str)
-                stderr str)
-
-        """
-        cmd_return = {"rc": None, "stdout": None, "stderr": None}
-        cmd = ['convert']
-
-        for item in convert_cmd_args:
-            cmd.append(str(item))
-
-        logging.debug("convert command: %s", " ".join(cmd))
-        convert_process = subprocess.Popen(cmd, stdout=subprocess.PIPE,
-                                           stderr=subprocess.PIPE)
-        cmd_return["stdout"], cmd_return["stderr"] = \
-            convert_process.communicate()
-        cmd_return["rc"] = int(convert_process.wait())
-        logging.debug("convert command output: %s", str(cmd_return))
-        return cmd_return
 
     def convert_image_density(self, image_path_src, image_path_dest, ppi):
         """Change the density of the pixels per inch of an image.
