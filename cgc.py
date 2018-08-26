@@ -35,7 +35,8 @@ class CGC:
             makedirs(self.tmp_dir_horizontal)
             makedirs(self.tmp_dir_vertical)
 
-    def find_first_image(self, images_dir):
+    @staticmethod
+    def find_first_image(images_dir):
         """Locate the first image in a directory.
 
         Args:
@@ -50,7 +51,8 @@ class CGC:
         logging.debug("First image found: %s", first_image)
         return first_image
 
-    def image_info(self, image_path):
+    @staticmethod
+    def image_info(image_path):
         """Return the dimensions of an image.
 
         Args:
@@ -86,7 +88,8 @@ class CGC:
         ppi = ceil((height_ppi + width_ppi) / 2)
         return ppi
 
-    def run_cmd(self, cmd):
+    @staticmethod
+    def run_cmd(cmd):
         """Execute a command.
 
         Args:
