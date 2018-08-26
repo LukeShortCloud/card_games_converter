@@ -86,11 +86,11 @@ class CGC:
         ppi = ceil((height_ppi + width_ppi) / 2)
         return ppi
 
-    def convert(self, convert_cmd_args):
-        """Execute a convert command.
+    def run_cmd(self, cmd):
+        """Execute a command.
 
         Args:
-            convert_cmd_args (list): A list of arguments for the command.
+            cmd (list): a list of a command and arguments
 
         Returns:
             cmd_return (dict):
@@ -100,12 +100,7 @@ class CGC:
 
         """
         cmd_return = {"rc": None, "stdout": None, "stderr": None}
-        cmd = ['convert']
-
-        for item in convert_cmd_args:
-            cmd.append(str(item))
-
-        logging.debug("convert command: %s", " ".join(cmd))
+        logging.debug("Running command: %s", " ".join(cmd))
         convert_process = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                                            stderr=subprocess.PIPE)
         cmd_return["stdout"], cmd_return["stderr"] = \
@@ -125,9 +120,10 @@ class CGC:
             boolean: If the convert command completed successfully.
 
         """
-        convert_cmd_args = ['-rotate', degrees, image_path_src, image_path_dest]
+        cmd = ["convert", "-rotate", degrees, image_path_src,
+               image_path_dest]
 
-        if self.convert(convert_cmd_args)["rc"] == 0:
+        if self.run_cmd(cmd)["rc"] == 0:
             return True
         else:
             return False
@@ -167,10 +163,10 @@ class CGC:
             boolean: If the convert density command finished successfully
 
         """
-        convert_cmd_args = ['-units', 'PixelsPerInch', '-density', ppi,
-                            image_path_src, image_path_dest]
+        cmd = ["convert", "-units", "PixelsPerInch", "-density", str(ppi),
+               image_path_src, image_path_dest]
 
-        if self.convert(convert_cmd_args)["rc"] == 0:
+        if self.run_cmd(cmd)["rc"] == 0:
             return True
         else:
             return False
@@ -199,11 +195,11 @@ class CGC:
                           " Please use horizontal or vertical.")
             exit(1)
 
-        convert_cmd_args = [convert_merge_arg, *image_paths,
-                            self.tmp_dir + "/" + convert_merge_method +
-                            "/" + merged_image_name]
+        cmd = ["convert", convert_merge_arg, *image_paths,
+               self.tmp_dir + "/" + convert_merge_method +
+               "/" + merged_image_name]
 
-        if self.convert(convert_cmd_args)["rc"] == 0:
+        if self.run_cmd(cmd)["rc"] == 0:
             return True
         else:
             return False
