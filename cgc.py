@@ -24,7 +24,8 @@ class CGC:
         logging.basicConfig(level=log_level)
         self.height_physical_inches = height_physical_inches
         self.width_physical_inches = width_physical_inches
-        self.tmp_dir = "/tmp/cgc"
+        self.tmp_root_dir = "/tmp"
+        self.tmp_dir = self.tmp_root_dir + "/cgc"
         self.tmp_dir_individual = self.tmp_dir + "/individual"
         self.tmp_dir_horizontal = self.tmp_dir + "/horizontal"
         self.tmp_dir_vertical = self.tmp_dir + "/vertical"
