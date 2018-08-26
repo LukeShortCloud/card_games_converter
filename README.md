@@ -10,9 +10,23 @@ Install ImageMagick and Python 3 on a Linux system.
 
 ## Usage
 
+Example Python code:
+
+```
+#!/usr/bin/python3
+
+from cgc import CGC
+
+
+cgc = CGC()
+use_images_dir = "/tmp/cards"
+cgc.convert_batch_individual(use_images_dir)
+cgc.convert_batch_append_all()
+```
+
 * Create the directory `/tmp/cards/`.
 * Copy individual images of cards to that directory.
-* Execute CGC: `$ python3 cgc.py`.
+* Execute the CGC program.
 * Print the resulting pages from `/tmp/cgc/horizontal/`.
 
 # Developers
