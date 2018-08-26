@@ -15,6 +15,12 @@ Install ImageMagick and Python 3 on a Linux system.
 * Execute CGC: `$ python3 cgc.py`.
 * Print the resulting pages from `/tmp/cgc/horizontal/`.
 
+# Developers
+
+Refer to the technical design document for more information about the development of CGC.
+
+cgc_tdd.md
+
 ## License
 
 Apache v2.0
