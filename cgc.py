@@ -123,10 +123,10 @@ class CGC:
         cmd = ["convert", "-rotate", degrees, image_path_src,
                image_path_dest]
 
-        if self.run_cmd(cmd)["rc"] == 0:
-            return True
-        else:
+        if self.run_cmd(cmd)["rc"] != 0:
             return False
+
+        return True
 
     def image_rotate_by_dimensions(self, image_path):
         """Rotate an image only if the width is greater than the height.
@@ -143,13 +143,10 @@ class CGC:
         if width > height:
             logging.debug("Rotating image: %s", image_path)
 
-            if self.convert_rotate(image_path, image_path):
-                return True
-            else:
+            if not self.convert_rotate(image_path, image_path):
                 return False
 
-        else:
-            return True
+        return True
 
     def convert_image_density(self, image_path_src, image_path_dest, ppi):
         """Change the density of the pixels per inch of an image.
@@ -166,10 +163,10 @@ class CGC:
         cmd = ["convert", "-units", "PixelsPerInch", "-density", str(ppi),
                image_path_src, image_path_dest]
 
-        if self.run_cmd(cmd)["rc"] == 0:
-            return True
-        else:
+        if self.run_cmd(cmd)["rc"] != 0:
             return False
+
+        return True
 
     def convert_merge(self, convert_merge_method, image_paths,
                       merged_image_name="out.jpg"):
@@ -191,18 +188,18 @@ class CGC:
         elif convert_merge_method == "horizontal":
             convert_merge_arg = "+append"
         else:
-            logging.error("Incorrect convert_merge_method specificed." +
-                          " Please use horizontal or vertical.")
+            logging.error("Incorrect convert_merge_method specificed. \
+                          Please use horizontal or vertical.")
             exit(1)
 
         cmd = ["convert", convert_merge_arg, *image_paths,
                self.tmp_dir + "/" + convert_merge_method +
                "/" + merged_image_name]
 
-        if self.run_cmd(cmd)["rc"] == 0:
-            return True
-        else:
+        if self.run_cmd(cmd)["rc"] != 0:
             return False
+
+        return True
 
     def convert_batch_individual(self, images_dir):
         """Convert individual image paths from a specified path to be
@@ -225,8 +222,8 @@ class CGC:
             image_path_src = images_dir + "/" + image
 
             if not isdir(image_path_src):
-                logging.debug("Convert batch individual processing the" +
-                              " image: %s", image)
+                logging.debug("Convert batch individual processing the \
+                              image: %s", image)
                 card_file_name = basename(image_path_src)
                 image_path_dest = (self.tmp_dir_individual + "/" +
                                    card_file_name)
