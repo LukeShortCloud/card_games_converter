@@ -114,7 +114,7 @@ class CGC:
         logging.debug("convert command output: %s", str(cmd_return))
         return cmd_return
 
-    def convert_rotate(self, image_path, degrees="90"):
+    def convert_rotate(self, image_path_src, image_path_dest, degrees="90"):
         """Execute the convert command to rotate an image.
 
         Args:
@@ -125,7 +125,7 @@ class CGC:
             boolean: If the convert command completed successfully.
 
         """
-        convert_cmd_args = ['-rotate', degrees, image_path, image_path]
+        convert_cmd_args = ['-rotate', degrees, image_path_src, image_path_dest]
 
         if self.convert(convert_cmd_args)["rc"] == 0:
             return True
@@ -147,7 +147,7 @@ class CGC:
         if width > height:
             logging.debug("Rotating image: %s", image_path)
 
-            if self.convert_rotate(image_path):
+            if self.convert_rotate(image_path, image_path):
                 return True
             else:
                 return False
