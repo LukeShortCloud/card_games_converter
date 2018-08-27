@@ -37,7 +37,7 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
         * ppi (int) = The pixels per inch density.
 * convert = Execute the `convert` ImageMagick command.
     * Input
-        * convert_cmd_args (list) = A list of arguments for the `convert` command.
+        * cmd (list) = A list of a command and arguments for it.
     * Ouput
         * cmd_return (dict)
             * rc (int) = Return code.
@@ -92,7 +92,7 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 
 * VERSION, TIME ESTIMATED (HOURS), TIME ACTUAL (HOURS)
 * 1.0.0, 40, 20
-* 1.1.0, 8
+* 1.1.0, 8, 10
 * 1.2.0, 8
 * 1.3.0, 4
 * 1.4.0, 8
@@ -106,9 +106,12 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 * 2018-08-16
     * Updated milestones versions. They no longer conflict with the original proof-of-concept version 0.1.0 shell script.
     * Added new milestone for having tests and exceptions written.
-* 2018-08-26
+* 2018-08-26.0
     * Added new milestones for caching and having a Pip package.
     * Added existing functions.
     * Added inputs and outputs for functions.
     * Updated development time to be in hours.
     * Updated estimated hours to be more accurate.
+    * Completed milestone `1.0.0`.
+* 2018-08-26.1
+    * Completed milestone `1.1.0`.

@@ -1,4 +1,8 @@
 #!/usr/bin/python3
+"""cgc provides a single class named CGC for processing card images into a
+   printable format
+
+"""
 
 import logging
 import subprocess
@@ -10,8 +14,10 @@ from PIL import Image
 
 
 class CGC:
+    """CGC provides methods for reformatting cards into printable sheets."""
 
-    def __init__(self, height_physical_inches=2.5, width_physical_inches=3.5):
+    def __init__(self, height_physical_inches=2.5, width_physical_inches=3.5,
+                 log_level="INFO"):
         """Initialize CGC by creating temporary directories
         and setting the standard phsical size of a card.
 
@@ -20,21 +26,30 @@ class CGC:
             width_physical_inches (int)
 
         """
-        logging.basicConfig(level="DEBUG")
+        logging.basicConfig(level=log_level)
         self.height_physical_inches = height_physical_inches
         self.width_physical_inches = width_physical_inches
-        self.tmp_dir = "/tmp/cgc"
+        self.tmp_root_dir = "/tmp"
+        self.tmp_dir = self.tmp_root_dir + "/cgc"
         self.tmp_dir_individual = self.tmp_dir + "/individual"
         self.tmp_dir_horizontal = self.tmp_dir + "/horizontal"
         self.tmp_dir_vertical = self.tmp_dir + "/vertical"
 
         if not exists(self.tmp_dir):
-            makedirs(self.tmp_dir)
-            makedirs(self.tmp_dir_individual)
-            makedirs(self.tmp_dir_horizontal)
-            makedirs(self.tmp_dir_vertical)
 
-    def find_first_image(self, images_dir):
+            try:
+                makedirs(self.tmp_dir)
+                makedirs(self.tmp_dir_individual)
+                makedirs(self.tmp_dir_horizontal)
+                makedirs(self.tmp_dir_vertical)
+            # Disable a false-positive error about the variable name "e"
+            # not being valid snake_case.
+            # pylint: disable=C0103
+            except IOError as e:
+                logging.critical("Failed to make temporary directories.\n%s", e)
+
+    @staticmethod
+    def find_first_image(images_dir):
         """Locate the first image in a directory.
 
         Args:
@@ -49,7 +64,8 @@ class CGC:
         logging.debug("First image found: %s", first_image)
         return first_image
 
-    def image_info(self, image_path):
+    @staticmethod
+    def image_info(image_path):
         """Return the dimensions of an image.
 
         Args:
@@ -85,11 +101,12 @@ class CGC:
         ppi = ceil((height_ppi + width_ppi) / 2)
         return ppi
 
-    def convert(self, convert_cmd_args):
-        """Execute a convert command.
+    @staticmethod
+    def run_cmd(cmd):
+        """Execute a command.
 
         Args:
-            convert_cmd_args (list): A list of arguments for the command.
+            cmd (list): a list of a command and arguments
 
         Returns:
             cmd_return (dict):
@@ -99,12 +116,7 @@ class CGC:
 
         """
         cmd_return = {"rc": None, "stdout": None, "stderr": None}
-        cmd = ['convert']
-
-        for item in convert_cmd_args:
-            cmd.append(str(item))
-
-        logging.debug("convert command: %s", " ".join(cmd))
+        logging.debug("Running command: %s", " ".join(cmd))
         convert_process = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                                            stderr=subprocess.PIPE)
         cmd_return["stdout"], cmd_return["stderr"] = \
@@ -113,7 +125,7 @@ class CGC:
         logging.debug("convert command output: %s", str(cmd_return))
         return cmd_return
 
-    def convert_rotate(self, image_path, degrees="90"):
+    def convert_rotate(self, image_path_src, image_path_dest, degrees="90"):
         """Execute the convert command to rotate an image.
 
         Args:
@@ -124,12 +136,13 @@ class CGC:
             boolean: If the convert command completed successfully.
 
         """
-        convert_cmd_args = ['-rotate', degrees, image_path, image_path]
+        cmd = ["convert", "-rotate", degrees, image_path_src,
+               image_path_dest]
 
-        if self.convert(convert_cmd_args)["rc"] == 0:
-            return True
-        else:
+        if self.run_cmd(cmd)["rc"] != 0:
             return False
+
+        return True
 
     def image_rotate_by_dimensions(self, image_path):
         """Rotate an image only if the width is greater than the height.
@@ -146,13 +159,10 @@ class CGC:
         if width > height:
             logging.debug("Rotating image: %s", image_path)
 
-            if self.convert_rotate(image_path):
-                return True
-            else:
+            if not self.convert_rotate(image_path, image_path):
                 return False
 
-        else:
-            return True
+        return True
 
     def convert_image_density(self, image_path_src, image_path_dest, ppi):
         """Change the density of the pixels per inch of an image.
@@ -166,13 +176,13 @@ class CGC:
             boolean: If the convert density command finished successfully
 
         """
-        convert_cmd_args = ['-units', 'PixelsPerInch', '-density', ppi,
-                            image_path_src, image_path_dest]
+        cmd = ["convert", "-units", "PixelsPerInch", "-density", str(ppi),
+               image_path_src, image_path_dest]
 
-        if self.convert(convert_cmd_args)["rc"] == 0:
-            return True
-        else:
+        if self.run_cmd(cmd)["rc"] != 0:
             return False
+
+        return True
 
     def convert_merge(self, convert_merge_method, image_paths,
                       merged_image_name="out.jpg"):
@@ -194,18 +204,18 @@ class CGC:
         elif convert_merge_method == "horizontal":
             convert_merge_arg = "+append"
         else:
-            logging.error("Incorrect convert_merge_method specificed." +
-                          " Please use horizontal or vertical.")
+            logging.error("Incorrect convert_merge_method specificed. \
+                          Please use horizontal or vertical.")
             exit(1)
 
-        convert_cmd_args = [convert_merge_arg, *image_paths,
-                            self.tmp_dir + "/" + convert_merge_method +
-                            "/" + merged_image_name]
+        cmd = ["convert", convert_merge_arg, *image_paths,
+               self.tmp_dir + "/" + convert_merge_method +
+               "/" + merged_image_name]
 
-        if self.convert(convert_cmd_args)["rc"] == 0:
-            return True
-        else:
+        if self.run_cmd(cmd)["rc"] != 0:
             return False
+
+        return True
 
     def convert_batch_individual(self, images_dir):
         """Convert individual image paths from a specified path to be
@@ -228,8 +238,8 @@ class CGC:
             image_path_src = images_dir + "/" + image
 
             if not isdir(image_path_src):
-                logging.debug("Convert batch individual processing the" +
-                              " image: %s", image)
+                logging.debug("Convert batch individual processing the \
+                              image: %s", image)
                 card_file_name = basename(image_path_src)
                 image_path_dest = (self.tmp_dir_individual + "/" +
                                    card_file_name)
@@ -260,34 +270,38 @@ class CGC:
         image_paths = []
         images = listdir(self.tmp_dir_individual)
         number_of_images = len(images)
+        logging.debug("Number of total images found: %s", str(number_of_images))
 
         for image in images:
             total_count += 1
             image_count += 1
+            image_path = self.tmp_dir_individual + "/" + image
+            image_paths.append(image_path)
 
-            if image_count > 4:
+            if image_count >= 4:
 
                 if not self.convert_merge("vertical", image_paths,
                                           str(total_count) + ".jpg"):
                     return False
 
-                # Reset the count and paths if 4 cards have processed already
+                # Reset the count and paths if 4 cards have processed already.
                 image_count = 0
                 image_paths = []
-            elif image_count <= 4:
-                image_path = self.tmp_dir_individual + "/" + image
-                image_paths.append(image_path)
+            elif image_count < 4:
 
-            if total_count == number_of_images:
+                # If this is the last image, then merge all of the
+                # remaining images.
+                if total_count == number_of_images:
 
-                if not self.convert_merge("vertical", image_paths,
-                                          str(total_count) + ".jpg"):
-                    return False
+                    if not self.convert_merge("vertical", image_paths,
+                                              str(total_count) + ".jpg"):
+                        return False
 
         total_count = 0
         image_count = 0
         image_paths = []
         images_vertical = listdir(self.tmp_dir_vertical)
+        number_of_vertical_images = len(images_vertical)
 
         for image in images_vertical:
             total_count += 1
@@ -295,18 +309,19 @@ class CGC:
             image_paths.append(self.tmp_dir_vertical + "/" + image)
 
             if image_count >= 2:
-                image_count = 0
 
                 if not self.convert_merge("horizontal", image_paths,
                                           str(total_count) + ".jpg"):
                     return False
 
+                image_count = 0
                 image_paths = []
+            elif image_count < 2:
+
+                if total_count == number_of_vertical_images:
+
+                    if not self.convert_merge("horizontal", image_paths,
+                                              str(total_count) + ".jpg"):
+                        return False
 
         return True
-
-
-cgc = CGC()
-use_images_dir = "/tmp/cards"
-cgc.convert_batch_individual(use_images_dir)
-cgc.convert_batch_append_all()
