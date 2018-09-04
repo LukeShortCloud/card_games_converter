@@ -8,6 +8,8 @@ This is aimed for use with independent and free card games that are intended for
 
 Install ImageMagick and Python 3 on a Linux system.
 
+Stable CGC releases can be downloaded from [here](https://github.com/ekultails/card_games_converter/releases).
+
 ## Usage
 
 Example Python code:
