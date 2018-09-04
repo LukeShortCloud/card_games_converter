@@ -35,7 +35,17 @@ cgc.convert_batch_append_all()
 
 Refer to the technical design document for more information about the development of CGC.
 
-cgc_tdd.md
+[cgc_tdd.md](cgc_tdd.md)
+
+All of the code should get a perfect 10/10 Pylint score.
+
+```
+$ pylint cgc.py
+No config file found, using default configuration
+
+------------------------------------
+Your code has been rated at 10.00/10
+```
 
 ## License
 
