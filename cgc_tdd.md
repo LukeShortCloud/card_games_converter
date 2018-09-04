@@ -11,12 +11,6 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 * imagemagick
 * Linux
 
-# API
-
-* v1
-    * /resize/ = POST. Upload a picture, convert it's size, and download the converted picture.
-        * height and width  = Specify a different physical size. The default is 2.5 inches high and 3.5 inches wide.
-
 # Functions
 
 * find_first_image = Locate the first image in a directory.
@@ -115,3 +109,5 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
     * Completed milestone `1.0.0`.
 * 2018-08-26.1
     * Completed milestone `1.1.0`.
+* 2018-09-03
+    * Temporarily remove API requirements.
