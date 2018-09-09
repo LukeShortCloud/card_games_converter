@@ -7,7 +7,7 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 # Technologies
 
 * Python 3.6
-    * falcon
+    * PIL
 * imagemagick
 * Linux
 
@@ -72,26 +72,49 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
     * Ouput
         * boolean = If this method was successful.
 
+# CLI Arguments (cgc-cli)
+
+* -h, --help = Show the help information.
+* -s, --src = The source directory.
+* -d, --dest = The destination directory.
+* --ppi-size = The pixels per inch size to use.
+* --ppi-length = The desired length in inches.
+* --ppi-width = The desired width in inches.
+* --single = Process a single source image instead of an entire directory.
+* --no-clean = Do not clean up temporary files when complete.
+* --cache {name|sha256} = The cache mode to use. Requires the use of `--no-clean`.
+    * name = Use the image name to see if a temporary modified image exists.
+    * sha256 = Use a checksum to see if an image has been modified already.
+
 # Milestones
 
 * 1.0.0 = All required functions are written and working.
 * 1.1.0 = Tests are written and all relevant exceptions are added to the code.
 * 1.2.0 = Programs works as a CLI utility with arguments.
-* 1.3.0 = Caching is supported. Processing of individual images can be skipped by comparing the original and processed images with a SHA256 checksum.
+* 1.3.0 = Caching is supported. Processing of individual images can be skipped by comparing the original and processed images. The check can use a name or a SHA256 checksum.
 * 1.4.0 = Parallel processing is added.
-* 1.5.0 = Pip package support.
+* 1.5.0 = Image rotating and density resizing is handled by the Python PIL library instead of the `convert` command.
+* 1.6.0 = Pip package support.
 * 2.0.0 = API v1 is implemented.
 
 # Development Time
 
-* VERSION, TIME ESTIMATED (HOURS), TIME ACTUAL (HOURS)
-* 1.0.0, 40, 20
-* 1.1.0, 8, 10
-* 1.2.0, 8
-* 1.3.0, 4
-* 1.4.0, 8
-* 1.5.0, 4
-* 2.0.0, 40
+| VERSION | TIME ESTIMATED (HOURS) | TIME ACTUAL (HOURS) |
+| ------- | ---------------------- | ------------------- |
+| 1.0.0 | 40 | 20 |
+| 1.1.0 | 8 | 10 |
+| 1.2.0 | 8 | |
+| 1.3.0 | 4 | |
+| 1.4.0 | 4 | |
+| 1.5.0 | 8 | |
+| 1.6.0 | 4 | |
+| 2.0.0 | 40 | |
+
+# Lessons Learned
+
+* Methods need to be as small as possible to abide by modular OOP best practices.
+* All function inputs and outputs need to be defined in the TDD before creating the program. The TDD serves a purpose of being pseudocode code. The extra time put into planning leads to faster development time.
+* When creating a new method, the related docstrings and a unit test should also be created at the same time. This avoids time wasted on troubleshooting later on.
 
 # TDD Revision History
 
@@ -111,3 +134,7 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
     * Completed milestone `1.1.0`.
 * 2018-09-03
     * Temporarily remove API requirements.
+* 2018-09-08
+    * Added CLI arguments.
+    * Added lessons learned.
+    * Added new milestone to exclusively use the Python PIL library for manipulating images.
