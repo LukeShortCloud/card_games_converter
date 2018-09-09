@@ -66,6 +66,11 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
         * images_dir (str) = The directory of images that should be processed.
     * Ouput
         * boolean = If this method was successful.
+* convert_batch_append = Batch append images in a certain direction
+    * Input
+        * append_method (str) = The way to append, either in the "vertical" or "horizontal" direction.
+    * Ouput
+        * boolean = If this method was successful.
 * convert_batch_append_all = Batch convert all individual images into printable pages.
     * Input
         * None
@@ -134,7 +139,9 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
     * Completed milestone `1.1.0`.
 * 2018-09-03
     * Temporarily remove API requirements.
-* 2018-09-08
+* 2018-09-08.0
     * Added CLI arguments.
     * Added lessons learned.
     * Added new milestone to exclusively use the Python PIL library for manipulating images.
+* 2018-09-08.1
+    * Refactored the convert_batch_append_all method to have less code and be more reusable.

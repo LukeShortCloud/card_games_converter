@@ -253,10 +253,69 @@ class CGC:
 
         return True
 
+    def convert_batch_append(self, append_method):
+        """Merge individual images in batches of 4 vertically
+        or batches of 2 horizontally for optimal printing space
+        usage.
+
+        Args:
+            append_method (str): Append images either by "vertical" or "horizontal"
+
+        Returns:
+            boolean: If any of the methods failed
+
+        """
+
+        if append_method == "vertical":
+            images = listdir(self.tmp_dir_individual)
+            image_count_max = 4
+            tmp_dir_append = self.tmp_dir_individual
+        elif append_method == "horizontal":
+            images = listdir(self.tmp_dir_vertical)
+            image_count_max = 2
+            tmp_dir_append = self.tmp_dir_vertical
+        else:
+            logging.critical("Incorrect append_method provided. Use vertical or horizontal.")
+            return False
+
+        total_count = 0
+        image_count = 0
+        image_paths = []
+        number_of_images = len(images)
+        logging.debug("Number of total images found: %s", str(number_of_images))
+
+        for image in images:
+            total_count += 1
+            image_count += 1
+            image_paths.append(tmp_dir_append + "/" + image)
+
+            if image_count >= image_count_max:
+
+                if not self.convert_merge(append_method, image_paths,
+                                          str(total_count) + ".jpg"):
+                    return False
+
+                # Reset the count and paths if 2 (horizontal) or 4 (veritcal)
+                # cards have been processed already.
+                image_count = 0
+                image_paths = []
+            elif image_count < image_count_max:
+
+                # If this is the last image, then merge all of the
+                # remaining images.
+                if total_count == number_of_images:
+
+                    if not self.convert_merge(append_method, image_paths,
+                                              str(total_count) + ".jpg"):
+                        return False
+
+        return True
+
     def convert_batch_append_all(self):
         """Merge all individual cards into a printable set. The cards are
         assumed to have already had their density changed and have been
-        rotated by the "convert_batch_individual" method.
+        rotated by the "convert_batch_individual" method. "convert_batch_append"
+        will process both "vertical" and "horizontal" appending.
 
         Args:
             None
@@ -265,63 +324,11 @@ class CGC:
             boolean: If any of the methods failed
 
         """
-        total_count = 0
-        image_count = 0
-        image_paths = []
-        images = listdir(self.tmp_dir_individual)
-        number_of_images = len(images)
-        logging.debug("Number of total images found: %s", str(number_of_images))
 
-        for image in images:
-            total_count += 1
-            image_count += 1
-            image_path = self.tmp_dir_individual + "/" + image
-            image_paths.append(image_path)
+        if not self.convert_batch_append(append_method="vertical"):
+            return False
 
-            if image_count >= 4:
-
-                if not self.convert_merge("vertical", image_paths,
-                                          str(total_count) + ".jpg"):
-                    return False
-
-                # Reset the count and paths if 4 cards have processed already.
-                image_count = 0
-                image_paths = []
-            elif image_count < 4:
-
-                # If this is the last image, then merge all of the
-                # remaining images.
-                if total_count == number_of_images:
-
-                    if not self.convert_merge("vertical", image_paths,
-                                              str(total_count) + ".jpg"):
-                        return False
-
-        total_count = 0
-        image_count = 0
-        image_paths = []
-        images_vertical = listdir(self.tmp_dir_vertical)
-        number_of_vertical_images = len(images_vertical)
-
-        for image in images_vertical:
-            total_count += 1
-            image_count += 1
-            image_paths.append(self.tmp_dir_vertical + "/" + image)
-
-            if image_count >= 2:
-
-                if not self.convert_merge("horizontal", image_paths,
-                                          str(total_count) + ".jpg"):
-                    return False
-
-                image_count = 0
-                image_paths = []
-            elif image_count < 2:
-
-                if total_count == number_of_vertical_images:
-
-                    if not self.convert_merge("horizontal", image_paths,
-                                              str(total_count) + ".jpg"):
-                        return False
+        if not self.convert_batch_append(append_method="horizontal"):
+            return False
 
         return True
