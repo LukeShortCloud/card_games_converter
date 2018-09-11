@@ -116,8 +116,8 @@ class CGCUnitTests(unittest.TestCase):
             self.assertTrue(False)
 
     def test_convert_merge(self):
-        card_1 = self.cgc.tmp_dir_individual + "/1.jpg"
-        card_2 = self.cgc.tmp_dir_individual + "/2.jpg"
+        card_1 = self.cgc.tmp_src_dir + "/1.jpg"
+        card_2 = self.cgc.tmp_src_dir + "/2.jpg"
         image_paths = [card_1, card_2]
         cards_merged_full_path = "/tmp/cgc/vertical/merged.jpg"
         cards_merged = basename(cards_merged_full_path)
