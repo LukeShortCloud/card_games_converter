@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """cgc provides a single class named CGC for processing card images into a
    printable format
 
