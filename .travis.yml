@@ -11,4 +11,4 @@ before_install:
 # no requirements.txt file for Travis CI to install PyPI depedencies from.
 install: true
 script:
-  - tests.py
+  - ./tests.py
