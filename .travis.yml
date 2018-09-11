@@ -6,8 +6,7 @@ sudo: required
 before_install:
   - sudo apt-get update
   - sudo apt-get install -y imagemagick
-# Skip the install, it is not needed. Otherwise, this fails because there is
-# no requirements.txt file for Travis CI to install PyPI depedencies from.
-install: true
+install:
+  - pip install -r requirements.txt
 script:
   - ./tests.py
