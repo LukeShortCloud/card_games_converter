@@ -16,8 +16,8 @@ from PIL import Image
 class CGC:
     """CGC provides methods for reformatting cards into printable sheets."""
 
-    def __init__(self, height_physical_inches=2.5, width_physical_inches=3.5,
-                 log_level="INFO"):
+    def __init__(self, tmp_dest_dir="/tmp/cgc", height_physical_inches=2.5,
+                 width_physical_inches=3.5, log_level="INFO"):
         """Initialize CGC by creating temporary directories
         and setting the standard phsical size of a card.
 
@@ -30,8 +30,7 @@ class CGC:
         self.height_physical_inches = height_physical_inches
         self.width_physical_inches = width_physical_inches
         self.tmp_src_dir = "/tmp/cards"
-        self.tmp_root_dir = "/tmp"
-        self.tmp_dest_dir = self.tmp_root_dir + "/cgc"
+        self.tmp_dest_dir = tmp_dest_dir
         self.tmp_dir_individual = self.tmp_dest_dir + "/individual"
         self.tmp_dir_horizontal = self.tmp_dest_dir + "/horizontal"
         self.tmp_dir_vertical = self.tmp_dest_dir + "/vertical"

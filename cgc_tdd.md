@@ -83,7 +83,7 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 * -s, --src = The source directory.
 * -d, --dest = The destination directory.
 * --ppi-size = The pixels per inch size to use.
-* --ppi-length = The desired length in inches.
+* --ppi-height = The desired height in inches.
 * --ppi-width = The desired width in inches.
 * --single = Process a single source image instead of an entire directory.
 * --no-clean = Do not clean up temporary files when complete.
@@ -145,3 +145,5 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
     * Added new milestone to exclusively use the Python PIL library for manipulating images.
 * 2018-09-08.1
     * Refactored the convert_batch_append_all method to have less code and be more reusable.
+* 2018-09-10
+    * Correct the CLI argument name from `--ppi-length` to `--ppi-height` to be consistent with the existing code.
