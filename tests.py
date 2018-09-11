@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 import unittest
 from os import listdir, makedirs, remove
@@ -111,8 +111,8 @@ class CGCUnitTests(unittest.TestCase):
             self.assertTrue(False)
 
         # Both the X and Y resolution dimensions should have the same density.
-        if (int(density_x_results["stdout"]) or \
-            int(density_y_results["stdout"])) != 104:
+        if "104" not in (density_x_results["stdout"].decode() or \
+                         density_y_results["stdout"].decode()):
             self.assertTrue(False)
 
     def test_convert_merge(self):

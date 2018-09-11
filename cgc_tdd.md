@@ -29,14 +29,14 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
         * image_dimensions (list) = The resolution height and width of an image.
     * Ouput
         * ppi (int) = The pixels per inch density.
-* convert = Execute the `convert` ImageMagick command.
+* run_cmd = Execute a shell command.
     * Input
         * cmd (list) = A list of a command and arguments for it.
     * Ouput
         * cmd_return (dict)
             * rc (int) = Return code.
-            * stdout (str) = Standard output.
-            * stderr (str) = Standard error.
+            * stdout (str bytes) = Standard output.
+            * stderr (str bytes) = Standard error.
 * convert_rotate = Rotate an image.
     * Input
         * image_path (str) = The full image path to use.
@@ -145,3 +145,5 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
     * Added new milestone to exclusively use the Python PIL library for manipulating images.
 * 2018-09-08.1
     * Refactored the convert_batch_append_all method to have less code and be more reusable.
+* 2018-09-11
+    * Corrected run_cmd outputs to show that bytes are returned.
