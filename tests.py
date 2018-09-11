@@ -112,7 +112,7 @@ class CGCUnitTests(unittest.TestCase):
 
         # Both the X and Y resolution dimensions should have the same density.
         if (int(density_x_results["stdout"]) or \
-            int(density_y_results["stdout"])) != 104:
+            int(density_y_results["stdout"])) != "104":
             self.assertTrue(False)
 
     def test_convert_merge(self):
