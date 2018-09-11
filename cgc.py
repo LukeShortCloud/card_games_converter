@@ -29,16 +29,17 @@ class CGC:
         logging.basicConfig(level=log_level)
         self.height_physical_inches = height_physical_inches
         self.width_physical_inches = width_physical_inches
+        self.tmp_src_dir = "/tmp/cards"
         self.tmp_root_dir = "/tmp"
-        self.tmp_dir = self.tmp_root_dir + "/cgc"
-        self.tmp_dir_individual = self.tmp_dir + "/individual"
-        self.tmp_dir_horizontal = self.tmp_dir + "/horizontal"
-        self.tmp_dir_vertical = self.tmp_dir + "/vertical"
+        self.tmp_dest_dir = self.tmp_root_dir + "/cgc"
+        self.tmp_dir_individual = self.tmp_dest_dir + "/individual"
+        self.tmp_dir_horizontal = self.tmp_dest_dir + "/horizontal"
+        self.tmp_dir_vertical = self.tmp_dest_dir + "/vertical"
 
-        if not exists(self.tmp_dir):
+        if not exists(self.tmp_dest_dir):
 
             try:
-                makedirs(self.tmp_dir)
+                makedirs(self.tmp_dest_dir)
                 makedirs(self.tmp_dir_individual)
                 makedirs(self.tmp_dir_horizontal)
                 makedirs(self.tmp_dir_vertical)
@@ -209,7 +210,7 @@ class CGC:
             exit(1)
 
         cmd = ["convert", convert_merge_arg, *image_paths,
-               self.tmp_dir + "/" + convert_merge_method +
+               self.tmp_dest_dir + "/" + convert_merge_method +
                "/" + merged_image_name]
 
         if self.run_cmd(cmd)["rc"] != 0:
@@ -324,6 +325,9 @@ class CGC:
             boolean: If any of the methods failed
 
         """
+
+        if not self.convert_batch_individual(self.tmp_src_dir):
+            return False
 
         if not self.convert_batch_append(append_method="vertical"):
             return False

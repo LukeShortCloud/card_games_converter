@@ -32,7 +32,7 @@ class CGCUnitTests(unittest.TestCase):
                      + str(count) + ".jpg")
 
         self.cgc = CGC(log_level="DEBUG")
-        self.tmp_card = self.cgc.tmp_dir + "/123.jpg"
+        self.tmp_card = self.cgc.tmp_dest_dir + "/123.jpg"
 
     def test_find_first_image(self):
         return_status = False
@@ -80,7 +80,7 @@ class CGCUnitTests(unittest.TestCase):
             self.assertTrue(False)
 
     def test_image_rotate_by_dimensions(self):
-        rotate_image = self.cgc.tmp_dir + "/rotate.jpg"
+        rotate_image = self.cgc.tmp_dest_dir + "/rotate.jpg"
         copyfile(self.last_image_card, rotate_image)
         # Return a list of: height, width
         rotate_image_original = self.cgc.image_info(rotate_image)
@@ -137,7 +137,6 @@ class CGCUnitTests(unittest.TestCase):
             self.assertTrue(False)
 
     def test_convert_batch_append_all(self):
-        self.cgc.convert_batch_individual(self.cards_source_dir)
         return_status = self.cgc.convert_batch_append_all()
         self.cgc.convert_batch_append_all()
         listdir_vertical = listdir(self.cgc.tmp_dir_vertical)
@@ -155,7 +154,7 @@ class CGCUnitTests(unittest.TestCase):
 
     def tearDown(self):
         rmtree(self.cards_source_dir)
-        rmtree(self.cgc.tmp_dir)
+        rmtree(self.cgc.tmp_dest_dir)
 
 
 if __name__ == '__main__':

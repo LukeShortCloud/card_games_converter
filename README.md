@@ -21,8 +21,6 @@ from cgc import CGC
 
 
 cgc = CGC()
-use_images_dir = "/tmp/cards"
-cgc.convert_batch_individual(use_images_dir)
 cgc.convert_batch_append_all()
 ```
 
