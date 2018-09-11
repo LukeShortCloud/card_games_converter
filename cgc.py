@@ -112,8 +112,8 @@ class CGC:
         Returns:
             cmd_return (dict):
                 rc (int): return code
-                stdout (str)
-                stderr str)
+                stdout (str bytes)
+                stderr (str bytes)
 
         """
         cmd_return = {"rc": None, "stdout": None, "stderr": None}
