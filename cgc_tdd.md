@@ -61,7 +61,12 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
         * merged_image_name (str) = The full image path where the result will be saved to.
     * Ouput
         * boolean = If this method was successful.
-* convert_batch_individual = Convert a batch of individual images into a format that can be properly appended. These will be rotated (if necessary) and have their PPI density changed.
+* convert_single = Convert a single image into a printable format.
+    * Inputs
+        * image_path_src = The image to convert.
+    * Output
+        * boolean = If this method was successful.
+* convert_batch_directory = Convert all images in a directory into a format that can be properly appended. These will be rotated (if necessary) and have their PPI density changed.
     * Input
         * images_dir (str) = The directory of images that should be processed.
     * Ouput
@@ -108,7 +113,7 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 | ------- | ---------------------- | ------------------- |
 | 1.0.0 | 40 | 20 |
 | 1.1.0 | 8 | 10 |
-| 1.2.0 | 8 | |
+| 1.2.0 | 8 | 2 |
 | 1.3.0 | 4 | |
 | 1.4.0 | 4 | |
 | 1.5.0 | 8 | |
@@ -149,3 +154,6 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
     * Correct the CLI argument name from `--ppi-length` to `--ppi-height` to be consistent with the existing code.
 * 2018-09-11
     * Corrected run_cmd outputs to show that bytes are returned.
+* 2018-09-12
+    * Completed milestone 1.2.0`.
+    * Split and rename "convert_batch_individual" into two separate functions: "convert_batch_directory" which now loops over images and converts them using common logic from "convert_single".

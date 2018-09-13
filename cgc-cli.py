@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
+"""A command-line interface utility for managing Card Games Converter (CGC)."""
 
 from argparse import ArgumentParser
 from cgc import CGC
 
 
-if __name__ == "__main__":
+def main():
+    """The main function for handling all of the CGC CLI arguments and
+    initializing a CGC object.
+    """
     log_level_arg = "INFO"
     tmp_dest_dir_arg = "/tmp/cgc"
     parser = ArgumentParser()
@@ -14,6 +18,8 @@ if __name__ == "__main__":
                         type=int)
     parser.add_argument("--ppi-width", help="the desired width in inches.",
                         type=int)
+    parser.add_argument("--single", help="convert a single card to a" + \
+                        " printable format.")
     parser.add_argument("-v", help="verbose logging.", action="store_true")
     args = parser.parse_args()
 
@@ -36,4 +42,11 @@ if __name__ == "__main__":
     if args.ppi_width:
         cgc.height_physical_width = args.ppi_width
 
-    cgc.convert_batch_append_all()
+    if args.single:
+        cgc.convert_single(args.single)
+    else:
+        cgc.convert_batch_append_all()
+
+
+if __name__ == '__main__':
+    main()

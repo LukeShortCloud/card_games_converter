@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """cgc provides a single class named CGC for processing card images into a
    printable format
-
 """
 
 import logging
@@ -24,7 +23,6 @@ class CGC:
         Args:
             height_physical_inches (int)
             width_physical_inches (int)
-
         """
         logging.basicConfig(level=log_level)
         self.height_physical_inches = height_physical_inches
@@ -57,7 +55,6 @@ class CGC:
 
         Returns:
             first_image (str)
-
         """
         first_image_name = listdir(images_dir)[0]
         first_image = images_dir + "/" + first_image_name
@@ -73,7 +70,6 @@ class CGC:
 
         Returns:
             list: height, width
-
         """
 
         with Image.open(image_path) as image:
@@ -91,7 +87,6 @@ class CGC:
 
         Returns:
             ppi (int)
-
         """
         height_ppi = image_dimensions[0] / self.height_physical_inches
         width_ppi = image_dimensions[1] / self.width_physical_inches
@@ -113,7 +108,6 @@ class CGC:
                 rc (int): return code
                 stdout (str bytes)
                 stderr (str bytes)
-
         """
         cmd_return = {"rc": None, "stdout": None, "stderr": None}
         logging.debug("Running command: %s", " ".join(cmd))
@@ -134,7 +128,6 @@ class CGC:
 
         Returns:
             boolean: If the convert command completed successfully.
-
         """
         cmd = ["convert", "-rotate", degrees, image_path_src,
                image_path_dest]
@@ -152,7 +145,6 @@ class CGC:
 
         Returns:
             boolean: If the image was successfully rotated.
-
         """
         height, width = self.image_info(image_path)
 
@@ -174,7 +166,6 @@ class CGC:
 
         Returns:
             boolean: If the convert density command finished successfully
-
         """
         cmd = ["convert", "-units", "PixelsPerInch", "-density", str(ppi),
                image_path_src, image_path_dest]
@@ -195,7 +186,6 @@ class CGC:
 
         Returns:
             boolean: If the convert merge command finished successfully
-
         """
         convert_merge_arg = ""
 
@@ -217,8 +207,37 @@ class CGC:
 
         return True
 
-    def convert_batch_individual(self, images_dir):
-        """Convert individual image paths from a specified path to be
+    def convert_single(self, image_path_src, ppi=None):
+        """Convert a single image to be a different density and rotate it
+        90 degrees if it is vertical.
+
+        Args:
+            image_path_src (str): The image to convert
+
+        Returns:
+            boolean: If any of the convert commands failed
+        """
+        logging.debug("Doing a full image conversion for: %s", image_path_src)
+
+        if ppi is None:
+            image_dimensions = self.image_info(image_path_src)
+            ppi = self.calc_ppi(image_dimensions)
+
+        card_file_name = basename(image_path_src)
+        image_path_dest = (self.tmp_dir_individual + "/" +
+                           card_file_name)
+
+        if not self.convert_image_density(image_path_src,
+                                          image_path_dest, ppi):
+            return False
+
+        if not self.image_rotate_by_dimensions(image_path_dest):
+            return False
+
+        return True
+
+    def convert_batch_directory(self, images_dir):
+        """Convert an entire directory from a specified path to be
         a different density and rotate them if needed. (Both the
         "convert_image_density" and "image_rotate_by_dimensions" methods
         are used on each image.
@@ -228,7 +247,6 @@ class CGC:
 
         Returns:
             boolean: If any of the convert commands failed
-
         """
         first_image = self.find_first_image(images_dir)
         first_image_info = self.image_info(first_image)
@@ -238,18 +256,7 @@ class CGC:
             image_path_src = images_dir + "/" + image
 
             if not isdir(image_path_src):
-                logging.debug("Convert batch individual processing the \
-                              image: %s", image)
-                card_file_name = basename(image_path_src)
-                image_path_dest = (self.tmp_dir_individual + "/" +
-                                   card_file_name)
-
-                if not self.convert_image_density(image_path_src,
-                                                  image_path_dest, ppi):
-                    return False
-
-                if not self.image_rotate_by_dimensions(image_path_dest):
-                    return False
+                self.convert_single(image_path_src, ppi)
 
         return True
 
@@ -263,7 +270,6 @@ class CGC:
 
         Returns:
             boolean: If any of the methods failed
-
         """
 
         if append_method == "vertical":
@@ -314,7 +320,7 @@ class CGC:
     def convert_batch_append_all(self):
         """Merge all individual cards into a printable set. The cards are
         assumed to have already had their density changed and have been
-        rotated by the "convert_batch_individual" method. "convert_batch_append"
+        rotated by the "convert_batch_directory" method. "convert_batch_append"
         will process both "vertical" and "horizontal" appending.
 
         Args:
@@ -322,10 +328,9 @@ class CGC:
 
         Returns:
             boolean: If any of the methods failed
-
         """
 
-        if not self.convert_batch_individual(self.tmp_src_dir):
+        if not self.convert_batch_directory(self.tmp_src_dir):
             return False
 
         if not self.convert_batch_append(append_method="vertical"):

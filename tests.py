@@ -128,8 +128,19 @@ class CGCUnitTests(unittest.TestCase):
 
         remove(cards_merged_full_path)
 
-    def test_convert_batch_individual(self):
-        return_status = self.cgc.convert_batch_individual(self.cards_source_dir)
+    def test_convert_single(self):
+        test_image_src = self.cgc.tmp_src_dir + "/single.jpg"
+        test_image_dest = self.cgc.tmp_dir_individual + "/single.jpg"
+        copyfile(self.cgc.tmp_src_dir + "/1.jpg", test_image_src)
+
+        if not self.cgc.convert_single(test_image_src):
+            self.assertTrue(False)
+
+        remove(test_image_src)
+        remove(test_image_dest)
+
+    def test_convert_batch_directory(self):
+        return_status = self.cgc.convert_batch_directory(self.cards_source_dir)
         individual_images = listdir(self.cgc.tmp_dir_individual)
 
         # There should be a total of nine cards converted from this test.
