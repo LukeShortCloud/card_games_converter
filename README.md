@@ -1,5 +1,7 @@
 # Card Games Converter (CGC)
 
+[![Build Status](https://travis-ci.org/ekultails/card_games_converter.svg?branch=master)](https://travis-ci.org/ekultails/card_games_converter)
+
 This program is used to batch convert standard 2.5 by 3.5 inches playing cards into a printable format. Each card in the `/tmp/cards/` directory will be rotated and have it's pixel per inch density changed to be the actual physical card size. Those card images will then be merged into stacks of 4 vertically. Next, every two stacks of 4 cards are merged horizontally to make a total of up to the maximum of 8 images per page to print. The completed images are saved to `/tmp/cgc/horizontal/`.
 
 This is aimed for use with independent and free card games that are intended for personal use.
