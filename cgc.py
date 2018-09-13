@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """cgc provides a single class named CGC for processing card images into a
    printable format
 
@@ -111,8 +111,8 @@ class CGC:
         Returns:
             cmd_return (dict):
                 rc (int): return code
-                stdout (str)
-                stderr str)
+                stdout (str bytes)
+                stderr (str bytes)
 
         """
         cmd_return = {"rc": None, "stdout": None, "stderr": None}

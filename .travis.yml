@@ -1,0 +1,12 @@
+---
+language: python
+python:
+  - "3.6"
+sudo: required
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install -y imagemagick
+install:
+  - pip install -r requirements.txt
+script:
+  - ./tests.py

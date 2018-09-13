@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 import unittest
 from os import listdir, makedirs, remove
@@ -15,7 +15,7 @@ class CGCUnitTests(unittest.TestCase):
         self.tmp_root_dir = "/tmp"
         self.cards_source_dir = self.tmp_root_dir + "/cards"
         self.last_image_card = self.tmp_root_dir + "/cards/9.jpg"
-        self.example_card_url = "https://www.wizards.com/global/images/swtcg_expansion_anewhope_famous1LargePic_en.jpg"
+        self.example_card_url = "https://swtcgidc.files.wordpress.com/2018/08/card-of-the-week-bosb029_starkiller_base_b.jpg"
 
         if not exists(self.cards_source_dir):
             makedirs(self.cards_source_dir)
@@ -111,8 +111,8 @@ class CGCUnitTests(unittest.TestCase):
             self.assertTrue(False)
 
         # Both the X and Y resolution dimensions should have the same density.
-        if (int(density_x_results["stdout"]) or \
-            int(density_y_results["stdout"])) != 104:
+        if "104" not in (density_x_results["stdout"].decode() or \
+                         density_y_results["stdout"].decode()):
             self.assertTrue(False)
 
     def test_convert_merge(self):
