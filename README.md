@@ -25,12 +25,12 @@ Help options:
 
 `./cgc-cli.py -h`
 
-### Python Class
+### Python Object
 
 Minimal Python code example:
 
 ```
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 from cgc import CGC
 
