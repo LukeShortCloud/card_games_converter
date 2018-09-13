@@ -154,6 +154,6 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 * 2018-09-11
     * Corrected run_cmd outputs to show that bytes are returned.
 * 2018-09-12
-    * Completed milestone 1.2.0`.
+    * Completed milestone `1.2.0`.
     * Split and rename "convert_batch_individual" into two separate functions: "convert_batch_directory" which now loops over images and converts them using common logic from "convert_single".
     * Remove unused `--ppi-size` CLI argument.
