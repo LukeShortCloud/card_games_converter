@@ -39,6 +39,22 @@ cgc = CGC()
 cgc.convert_batch_append_all()
 ```
 
+### Example Usage
+
+#### Star Wars Trading Card Game (Wizards of the Coast)
+
+The [Star Wars Trading Card Game (TCG)](http://starwars.wikia.com/wiki/Star_Wars_Trading_Card_Game) lasted from 2001 to 2005 before being cancelled. It is now unofficially maintained by the [Independent Development Committee (IDC)](https://swtcgidc.wordpress.com/) that continues to make new cards and expansion packs. The latest rulebook explaining how to play can be found [here](https://swtcgidc.wordpress.com/rules/).
+
+Download the "Zipped Card JPGs" archive of an expansion pack of playing cards from [here](https://swtcgidc.wordpress.com/expansions-home/). Extract the archive and copy the desired cards to print into a different folder. Then use CGC to process the cards.
+
+```
+./cgc-cli.py --src /home/user/Documents/cards_to_print/
+```
+
+Printable pages of cards with the correct size and pixel density will be created and placed in the directory `/tmp/cgc/horizontal/`.
+
+This utility avoids the need to use the "Printable PDFs" provided for some IDC expansions. Ink and paper are not wasted, a person can print the exact cards they want, and this addresses how not every expansion has "Printable PDFs" available.
+
 # Developers
 
 Refer to the technical design document for more information about the development of CGC.
