@@ -21,7 +21,7 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 * image_info = Find the resolution dimensions of an image.
     * Input
         * image_path (str) = The full path to an image.
-    * Output
+    * Outputs
         * height (int)
         * width (int)
 * calc_ppi = Calculate and return the PPI for an image based on it's height and width.
@@ -32,7 +32,7 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 * run_cmd = Execute a shell command.
     * Input
         * cmd (list) = A list of a command and arguments for it.
-    * Ouput
+    * Ouputs
         * cmd_return (dict)
             * rc (int) = Return code.
             * stdout (str bytes) = Standard output.
@@ -48,14 +48,14 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
     * Ouput
         * boolean = If this method was successful.
 * convert_image_density = Convert a single image to a specific physical size density based on the PPI.
-    * Input
+    * Inputs
         * image_path_src (str) = The full path to the source image to convert.
         * image_path_dest (str) = The full path to the destination image to save as.
         * ppi (int) = The desired pixels per inch density.
     * Ouput
         * boolean = If this method was successful.
 * convert_merge = Merge one or more images together either vertically or horizontally.
-    * Input
+    * Inputs
         * convert_merge_method (str) = Append the images together in the "vertical" or "horizontal" direction
         * images_paths (list) = A list of all of the full image paths to append together.
         * merged_image_name (str) = The full image path where the result will be saved to.
@@ -81,6 +81,23 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
         * None
     * Ouput
         * boolean = If this method was successful.
+* cache_mode_check = Check to see what cache back-end should be used and then call it.
+    * Input
+        * cache_mode (str) = The cache mode to use: "name" or "sha256".
+    * Output
+        * boolean = If this method was successful.
+* cache_mode_name = Cache back-end based on file names.
+    * Inputs
+        * src (str) = The source directory to scan.
+        * dest (str) = The destination directory to compare the source against.
+    * Output
+        * list = A list of cards that are missing.
+* cache_mode_sha256 = Cache back-end based on SHA256 checksums.
+    * Inputs
+        * src (str) = The source directory to scan.
+        * dest (str) = The destination directory to compare the source against.
+    * Output
+        * list = A list of cards that are missing or do not have matching SHA256 checksums.
 
 # CLI Arguments (cgc-cli)
 
@@ -157,3 +174,5 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
     * Completed milestone `1.2.0`.
     * Split and rename "convert_batch_individual" into two separate functions: "convert_batch_directory" which now loops over images and converts them using common logic from "convert_single".
     * Remove unused `--ppi-size` CLI argument.
+* 2018-09-19
+    * Update function definitions to include methods used for caching.
