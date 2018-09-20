@@ -25,6 +25,7 @@ class CGC:
             width_physical_inches (int)
         """
         logging.basicConfig(level=log_level)
+        self.cache_mode = "name"
         self.height_physical_inches = height_physical_inches
         self.width_physical_inches = width_physical_inches
         self.tmp_src_dir = "/tmp/cards"
@@ -175,6 +176,30 @@ class CGC:
 
         return True
 
+    @staticmethod
+    def listdir_full_path(src):
+
+        for file in listdir(src):
+            yield src + "/" + file
+
+    def cache_mode_name(self):
+        dest_full_paths = list(self.listdir_full_path(self.tmp_dir_individual))
+        files_cache_invalid = []
+        src_file_found = False
+
+        for src_file in listdir(self.tmp_src_dir):
+
+            for dest_full_path in dest_full_paths:
+
+                if dest_full_path.endswith(src_file):
+                    src_file_found = True
+
+            if not src_file_found:
+                files_cache_invalid.append(self.tmp_src_dir + "/" + src_file)
+
+        logging.debug("Cache is invalid for: {}".format(files_cache_invalid))
+        return files_cache_invalid
+
     def convert_merge(self, convert_merge_method, image_paths,
                       merged_image_name="out.jpg"):
         """Merge one or more images either vertically or horizontally.
@@ -251,9 +276,17 @@ class CGC:
         first_image = self.find_first_image(images_dir)
         first_image_info = self.image_info(first_image)
         ppi = self.calc_ppi(first_image_info)
+        image_paths_src = []
 
-        for image in listdir(images_dir):
-            image_path_src = images_dir + "/" + image
+        if self.cache_mode is None:
+
+            for image in listdir(images_dir):
+                image_paths_src.append(images_dir + "/" + image)
+
+        else:
+            image_paths_src = self.cache_mode_name()
+
+        for image_path_src in image_paths_src:
 
             if not isdir(image_path_src):
                 self.convert_single(image_path_src, ppi)
