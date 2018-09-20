@@ -42,7 +42,7 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
         * image_path (str) = The full image path to use.
     * Ouput
         * boolean = If this method was successful.
-* image_rotate_by_dimensions = Rotate an image if the width is greater than the height. This allows for stacking of images for a printable page of 8 cards.
+* convert_rotate_by_dimensions = Rotate an image if the width is greater than the height. This allows for stacking of images for a printable page of 8 cards.
     * Input
         * image_path (src) = The full path to the image.
     * Ouput

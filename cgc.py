@@ -137,7 +137,7 @@ class CGC:
 
         return True
 
-    def image_rotate_by_dimensions(self, image_path):
+    def convert_rotate_by_dimensions(self, image_path):
         """Rotate an image only if the width is greater than the height.
 
         Args:
@@ -231,7 +231,7 @@ class CGC:
                                           image_path_dest, ppi):
             return False
 
-        if not self.image_rotate_by_dimensions(image_path_dest):
+        if not self.convert_rotate_by_dimensions(image_path_dest):
             return False
 
         return True
@@ -239,7 +239,7 @@ class CGC:
     def convert_batch_directory(self, images_dir):
         """Convert an entire directory from a specified path to be
         a different density and rotate them if needed. (Both the
-        "convert_image_density" and "image_rotate_by_dimensions" methods
+        "convert_image_density" and "convert_rotate_by_dimensions" methods
         are used on each image.
 
         Args:
