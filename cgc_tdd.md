@@ -83,7 +83,7 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
         * boolean = If this method was successful.
 * cache_mode_check = Check to see what cache back-end should be used and then call it.
     * Input
-        * cache_mode (str) = The cache mode to use: "name" or "sha256".
+        * cache_mode (str) = The cache mode to use: "name" or "sha512".
     * Output
         * boolean = If this method was successful.
 * cache_mode_name = Cache back-end based on file names.
@@ -92,12 +92,12 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
         * dest (str) = The destination directory to compare the source against.
     * Output
         * list = A list of cards that are missing.
-* cache_mode_sha256 = Cache back-end based on SHA256 checksums.
+* cache_mode_sha512 = Cache back-end based on SHA512 checksums.
     * Inputs
         * src (str) = The source directory to scan.
         * dest (str) = The destination directory to compare the source against.
     * Output
-        * list = A list of cards that are missing or do not have matching SHA256 checksums.
+        * list = A list of cards that are missing or do not have matching SHA512 checksums.
 
 # CLI Arguments (cgc-cli)
 
@@ -108,16 +108,16 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 * --ppi-width = The desired width in inches.
 * --single = Process a single source image instead of an entire directory.
 * --no-clean = Do not clean up temporary files when complete.
-* --cache {name|sha256} = The cache mode to use. Requires the use of `--no-clean`.
+* --cache {name|sha512} = The cache mode to use. Requires the use of `--no-clean`.
     * name = Use the image name to see if a temporary modified image exists.
-    * sha256 = Use a checksum to see if an image has been modified already.
+    * sha512 = Use a checksum to see if an image has been modified already.
 
 # Milestones
 
 * 1.0.0 = All required functions are written and working.
 * 1.1.0 = Tests are written and all relevant exceptions are added to the code.
 * 1.2.0 = Programs works as a CLI utility with arguments.
-* 1.3.0 = Caching is supported. Processing of individual images can be skipped by comparing the original and processed images. The check can use a name or a SHA256 checksum.
+* 1.3.0 = Caching is supported. Processing of individual images can be skipped by comparing the original and processed images. The check can use a name or a SHA512 checksum.
 * 1.4.0 = Parallel processing is added.
 * 1.5.0 = Image rotating and density resizing is handled by the Python PIL library instead of the `convert` command.
 * 1.6.0 = Pip package support.
@@ -176,3 +176,5 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
     * Remove unused `--ppi-size` CLI argument.
 * 2018-09-19
     * Update function definitions to include methods used for caching.
+* 2018-10-06
+    * Use SHA512 instead of SHA256 for checksum caching.

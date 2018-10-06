@@ -8,6 +8,7 @@ import subprocess
 from os import listdir, makedirs
 from os.path import basename, exists, isdir
 from math import ceil
+from hashlib import sha512
 # image processing library
 from PIL import Image
 
@@ -25,7 +26,7 @@ class CGC:
             width_physical_inches (int)
         """
         logging.basicConfig(level=log_level)
-        self.cache_mode = "name"
+        self.cache_mode = None
         self.height_physical_inches = height_physical_inches
         self.width_physical_inches = width_physical_inches
         self.tmp_src_dir = "/tmp/cards"
@@ -178,11 +179,31 @@ class CGC:
 
     @staticmethod
     def listdir_full_path(src):
+        """Return a list of full paths to each file in a directory.
+
+        Args:
+            src (str): The source directory to look for files in.
+
+        Yields:
+            list: The full path of each file in a directory.
+        """
 
         for file in listdir(src):
             yield src + "/" + file
 
     def cache_mode_name(self):
+        """Use a cache by comparing file names from a source and destination
+        directory. If the file name from the source directory is missing in the
+        destination then it will be returned. It is assumed that those file
+        images need to be proccessed.
+
+        Args:
+            None
+
+        Returns:
+            list: The full path to each file that is missing in the destination
+                  directory.
+        """
         dest_full_paths = list(self.listdir_full_path(self.tmp_dir_individual))
         files_cache_invalid = []
         src_file_found = False
@@ -197,7 +218,52 @@ class CGC:
             if not src_file_found:
                 files_cache_invalid.append(self.tmp_src_dir + "/" + src_file)
 
-        logging.debug("Cache is invalid for: {}".format(files_cache_invalid))
+        logging.debug("Cache is invalid for: %s", files_cache_invalid)
+        return files_cache_invalid
+
+    def cache_mode_sha512(self):
+        """Use a cache by comparing SHA512 checksums for each file from a
+        source and destination directory. If the checksum is the same then
+        the destination file might not have been processed yet. It is assumed
+        that those file images need to be proccessed.
+
+        Args:
+            None
+
+        Returns:
+            list: The full path to each file that has the same checksum in the
+                  source and destination directory.
+        """
+        dest_full_paths = list(self.listdir_full_path(self.tmp_dir_individual))
+        files_cache_invalid = []
+        src_hash = ""
+        dest_hash = ""
+
+        for src_file in listdir(self.tmp_src_dir):
+            src_full_path = self.tmp_src_dir + "/" + src_file
+
+            for dest_full_path in dest_full_paths:
+
+                if dest_full_path.endswith(src_file):
+
+                    with open(dest_full_path, "rb") as dest_full_path_file:
+                        dest_hash = sha512(dest_full_path_file.read()).hexdigest()
+                        logging.debug("dest_full_path: %s", dest_full_path)
+                        logging.debug("dest_hash: %s", dest_hash)
+
+                    with open(src_full_path, "rb") as src_full_path_file:
+                        src_hash = sha512(src_full_path_file.read()).hexdigest()
+                        logging.debug("src_full_path: %s", src_full_path)
+                        logging.debug("src_hash: %s", src_hash)
+
+                    if src_hash == dest_hash:
+                        # Assume that if the file is exactly the same it probably
+                        # needs to be processed.
+                        files_cache_invalid.append(src_full_path)
+
+        if files_cache_invalid != []:
+            logging.debug("Cache is invalid for: %s", files_cache_invalid)
+
         return files_cache_invalid
 
     def convert_merge(self, convert_merge_method, image_paths,
@@ -278,13 +344,14 @@ class CGC:
         ppi = self.calc_ppi(first_image_info)
         image_paths_src = []
 
-        if self.cache_mode is None:
+        if self.cache_mode == "name":
+            image_paths_src = self.cache_mode_name()
+        elif self.cache_mode == "sha512":
+            image_paths_src = self.cache_mode_sha512()
+        else:
 
             for image in listdir(images_dir):
                 image_paths_src.append(images_dir + "/" + image)
-
-        else:
-            image_paths_src = self.cache_mode_name()
 
         for image_path_src in image_paths_src:
 
