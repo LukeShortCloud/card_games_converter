@@ -88,14 +88,14 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
         * boolean = If this method was successful.
 * cache_mode_name = Cache back-end based on file names.
     * Inputs
-        * src (str) = The source directory to scan.
-        * dest (str) = The destination directory to compare the source against.
+        * src_dir (str) = The source directory to scan.
+        * dest_dir (str) = The destination directory to compare the source against.
     * Output
         * list = A list of cards that are missing.
 * cache_mode_sha512 = Cache back-end based on SHA512 checksums.
     * Inputs
-        * src (str) = The source directory to scan.
-        * dest (str) = The destination directory to compare the source against.
+        * src_dir (str) = The source directory to scan.
+        * dest_dir (str) = The destination directory to compare the source against.
     * Output
         * list = A list of cards that are missing or do not have matching SHA512 checksums.
 
@@ -198,7 +198,9 @@ Commands: `$ echo 3 | sudo tee /proc/sys/vm/drop_caches && sync && time ./cgc-cl
     * Update function definitions to include methods used for caching.
 * 2018-10-06
     * Use SHA512 instead of SHA256 for checksum caching.
-* 2018-10-12
+* 2018-10-12.1
     * Added cache benchmarking tests and results.
     * Added development time considerations to lessons learned.
     * Completed milestone `1.3.0`.
+* 2018-10-12.2
+    * Updated variables names used in cache functions.

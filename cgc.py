@@ -198,7 +198,7 @@ class CGC:
         for file in listdir(src):
             yield src + "/" + file
 
-    def cache_mode_name(self):
+    def cache_mode_name(self, src_dir=None, dest_dir=None):
         """Use a cache by comparing file names from a source and destination
         directory. If the file name from the source directory is missing in the
         destination then it will be returned. It is assumed that those file
@@ -211,11 +211,20 @@ class CGC:
             list: The full path to each file that is missing in the destination
                   directory.
         """
-        dest_full_paths = list(self.listdir_full_path(self.tmp_dir_individual))
+
+        # These variables cannot be assigned as arugments because the "self"
+        # variable is not available yet during the function initialization.
+        if src_dir is None:
+            src_dir = self.tmp_src_dir
+
+        if dest_dir is None:
+            dest_dir = self.tmp_dir_individual
+
+        dest_full_paths = list(self.listdir_full_path(dest_dir))
         files_cache_invalid = []
         src_file_found = False
 
-        for src_file in listdir(self.tmp_src_dir):
+        for src_file in listdir(src_dir):
 
             for dest_full_path in dest_full_paths:
 
@@ -223,12 +232,12 @@ class CGC:
                     src_file_found = True
 
             if not src_file_found:
-                files_cache_invalid.append(self.tmp_src_dir + "/" + src_file)
+                files_cache_invalid.append(src_dir + "/" + src_file)
 
         logging.debug("Cache is invalid for: %s", files_cache_invalid)
         return files_cache_invalid
 
-    def cache_mode_sha512(self):
+    def cache_mode_sha512(self, src_dir=None, dest_dir=None):
         """Use a cache by comparing SHA512 checksums for each file from a
         source and destination directory. If the checksum is the same then
         the destination file might not have been processed yet. It is assumed
@@ -241,13 +250,20 @@ class CGC:
             list: The full path to each file that has the same checksum in the
                   source and destination directory.
         """
-        dest_full_paths = list(self.listdir_full_path(self.tmp_dir_individual))
+
+        if src_dir is None:
+            src_dir = self.tmp_src_dir
+
+        if dest_dir is None:
+            dest_dir = self.tmp_dir_individual
+
+        dest_full_paths = list(self.listdir_full_path(dest_dir))
         files_cache_invalid = []
         src_hash = ""
         dest_hash = ""
 
-        for src_file in listdir(self.tmp_src_dir):
-            src_full_path = self.tmp_src_dir + "/" + src_file
+        for src_file in listdir(src_dir):
+            src_full_path = self.src_dir + "/" + src_file
 
             for dest_full_path in dest_full_paths:
 
