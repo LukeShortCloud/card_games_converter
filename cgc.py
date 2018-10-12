@@ -263,7 +263,7 @@ class CGC:
         dest_hash = ""
 
         for src_file in listdir(src_dir):
-            src_full_path = self.src_dir + "/" + src_file
+            src_full_path = src_dir + "/" + src_file
 
             for dest_full_path in dest_full_paths:
 
