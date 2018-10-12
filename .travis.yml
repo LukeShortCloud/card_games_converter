@@ -8,5 +8,7 @@ before_install:
   - sudo apt-get install -y imagemagick
 install:
   - pip install -r requirements.txt
+  - pip install pylint
 script:
+  - pylint cgc.py
   - ./tests.py
