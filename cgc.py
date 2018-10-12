@@ -16,6 +16,8 @@ from PIL import Image
 class CGC:
     """CGC provides methods for reformatting cards into printable sheets."""
 
+    cgc_version = "1.3.0"
+
     def __init__(self, tmp_dest_dir="/tmp/cgc", height_physical_inches=2.5,
                  width_physical_inches=3.5, log_level="INFO"):
         """Initialize CGC by creating temporary directories
@@ -47,6 +49,11 @@ class CGC:
             # pylint: disable=C0103
             except IOError as e:
                 logging.critical("Failed to make temporary directories.\n%s", e)
+
+    @classmethod
+    def get_version(cls):
+        """Returns the CGC version string."""
+        return cls.cgc_version
 
     @staticmethod
     def find_first_image(images_dir):
