@@ -55,6 +55,17 @@ Printable pages of cards with the correct size and pixel density will be created
 
 This utility avoids the need to use the "Printable PDFs" provided for some IDC expansions. Ink and paper are not wasted, a person can print the exact cards they want, and this addresses how not every expansion has "Printable PDFs" available.
 
+## Caching
+
+The cache modes decreases the amount of time to re-process similar images. It was introduced in CGC 1.3.0 and is disabled by default because the cache methods could be unreliable in unknown edge case scenarios. Using cache mode requires to first run CGC at least once.
+
+* name = A simple cache to see if an image name has already been processed.
+* sha512 = A checksum check to see if an image has been modified already.
+
+```
+$ ./cgc-cli.py --cache name
+```
+
 # Developers
 
 Refer to the technical design document for more information about the development of CGC.

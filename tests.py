@@ -79,12 +79,12 @@ class CGCUnitTests(unittest.TestCase):
            (not return_status):
             self.assertTrue(False)
 
-    def test_image_rotate_by_dimensions(self):
+    def test_convert_rotate_by_dimensions(self):
         rotate_image = self.cgc.tmp_dest_dir + "/rotate.jpg"
         copyfile(self.last_image_card, rotate_image)
         # Return a list of: height, width
         rotate_image_original = self.cgc.image_info(rotate_image)
-        return_status = self.cgc.image_rotate_by_dimensions(rotate_image)
+        return_status = self.cgc.convert_rotate_by_dimensions(rotate_image)
         rotate_image_new = self.cgc.image_info(rotate_image)
 
         if not return_status:
@@ -128,16 +128,27 @@ class CGCUnitTests(unittest.TestCase):
 
         remove(cards_merged_full_path)
 
-    def test_convert_single(self):
+    def test_convert_single(self, cache_mode=None):
+
+        if cache_mode == "name" or cache_mode == "sha512":
+            self.cgc.cache_mode = cache_mode
+
         test_image_src = self.cgc.tmp_src_dir + "/single.jpg"
         test_image_dest = self.cgc.tmp_dir_individual + "/single.jpg"
         copyfile(self.cgc.tmp_src_dir + "/1.jpg", test_image_src)
 
         if not self.cgc.convert_single(test_image_src):
             self.assertTrue(False)
+            return False
 
         remove(test_image_src)
         remove(test_image_dest)
+        return True
+
+    def test_convert_single_cache(self):
+
+        for cache_mode in ["name", "sha512"]:
+            self.assertTrue(self.test_convert_single(cache_mode))
 
     def test_convert_batch_directory(self):
         return_status = self.cgc.convert_batch_directory(self.cards_source_dir)
@@ -162,6 +173,7 @@ class CGCUnitTests(unittest.TestCase):
             self.assertTrue(False)
         elif return_status == False:
             self.assertTrue(False)
+
 
     def tearDown(self):
         rmtree(self.cards_source_dir)
