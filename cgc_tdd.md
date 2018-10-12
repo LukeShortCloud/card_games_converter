@@ -130,17 +130,37 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 | 1.0.0 | 40 | 20 |
 | 1.1.0 | 8 | 10 |
 | 1.2.0 | 8 | 2 |
-| 1.3.0 | 4 | |
+| 1.3.0 | 4 | 5 |
 | 1.4.0 | 4 | |
 | 1.5.0 | 8 | |
 | 1.6.0 | 4 | |
 | 2.0.0 | 40 | |
 
+# Cache Benchmarking
+
+## CGC 1.3.0
+
+Fedora 28, Python 3.6.6, ImageMagick 6.9.9.38
+
+The Linux kernel I/O cache is first flushed before starting to test to prevent inaccurate and faster-than-expected results.
+
+Commands: `$ echo 3 | sudo tee /proc/sys/vm/drop_caches && sync && time ./cgc-cli.py $ARGS_CGC`
+
+| Description | Cache Type | Real Time |
+| ----------- | ---------- | --------- |
+| 100 cards | none | 0m35.940s |
+| 100 cards | name | 0m17.027s |
+| 100 cards | sha512 | 0m17.500s |
+| 1000 cards | none | 5m54.514s |
+| 1000 cards | name | 2m56.743s |
+| 1000 cards | sha512 | 2m57.687s |
+
 # Lessons Learned
 
 * Methods need to be as small as possible to abide by modular OOP best practices.
-* All function inputs and outputs need to be defined in the TDD before creating the program. The TDD serves a purpose of being pseudocode code. The extra time put into planning leads to faster development time.
+* All function inputs and outputs need to be defined in the TDD before creating the program, even if a program will be a small personal project. The TDD serves a purpose of being pseudocode code. The extra time put into planning leads to faster development time.
 * When creating a new method, the related docstrings and a unit test should also be created at the same time. This avoids time wasted on troubleshooting later on.
+* Development time estimates should have more buffer time to account for documenting, testing, and unknown unknown issues.
 
 # TDD Revision History
 
@@ -178,3 +198,7 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
     * Update function definitions to include methods used for caching.
 * 2018-10-06
     * Use SHA512 instead of SHA256 for checksum caching.
+* 2018-10-12
+    * Added cache benchmarking tests and results.
+    * Added development time considerations to lessons learned.
+    * Completed milestone `1.3.0`.
