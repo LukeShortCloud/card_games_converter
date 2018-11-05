@@ -9,6 +9,8 @@ before_install:
 install:
   - pip install -r requirements.txt
   - pip install pylint
+  # Test the `setup.py` usage by installing the local package.
+  - pip install .
 script:
-  - pylint cgc.py
+  - pylint cgc/cgc.py
   - ./tests.py

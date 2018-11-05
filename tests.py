@@ -6,7 +6,7 @@ from os.path import basename, exists, isfile
 from shutil import copyfile, rmtree
 import urllib.request
 import ssl
-from cgc import CGC
+from cgc.cgc import CGC
 
 
 class CGCUnitTests(unittest.TestCase):

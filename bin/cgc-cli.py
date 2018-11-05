@@ -2,7 +2,7 @@
 """A command-line interface utility for managing Card Games Converter (CGC)."""
 
 from argparse import ArgumentParser
-from cgc import CGC
+from cgc.cgc import CGC
 
 
 def main():

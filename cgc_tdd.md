@@ -118,9 +118,9 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 * 1.1.0 = Tests are written and all relevant exceptions are added to the code.
 * 1.2.0 = Programs works as a CLI utility with arguments.
 * 1.3.0 = Caching is supported. Processing of individual images can be skipped by comparing the original and processed images. The check can use a name or a SHA512 checksum.
-* 1.4.0 = Parallel processing is added.
-* 1.5.0 = Image rotating and density resizing is handled by the Python PIL library instead of the `convert` command.
-* 1.6.0 = Pip package support.
+* 1.3.1 = PyPI package support.
+* 1.4.0 = Image rotating and density resizing is handled by the Python PIL library instead of the `convert` command.
+* 1.5.0 = Parallel processing is added.
 * 2.0.0 = API v1 is implemented.
 
 # Development Time
@@ -131,9 +131,9 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 | 1.1.0 | 8 | 10 |
 | 1.2.0 | 8 | 2 |
 | 1.3.0 | 4 | 5 |
+| 1.3.1 | 4 | 1 |
 | 1.4.0 | 4 | |
-| 1.5.0 | 8 | |
-| 1.6.0 | 4 | |
+| 1.5.0 | 4 | |
 | 2.0.0 | 40 | |
 
 # Cache Benchmarking
@@ -160,7 +160,7 @@ Commands: `$ echo 3 | sudo tee /proc/sys/vm/drop_caches && sync && time ./cgc-cl
 * Methods need to be as small as possible to abide by modular OOP best practices.
 * All function inputs and outputs need to be defined in the TDD before creating the program, even if a program will be a small personal project. The TDD serves a purpose of being pseudocode code. The extra time put into planning leads to faster development time.
 * When creating a new method, the related docstrings and a unit test should also be created at the same time. This avoids time wasted on troubleshooting later on.
-* Development time estimates should have more buffer time to account for documenting, testing, and unknown unknown issues.
+* Development time estimates should have more buffer time to account for documenting, testing, refactoring, and unknown unknown issues.
 
 # TDD Revision History
 
@@ -204,3 +204,8 @@ Commands: `$ echo 3 | sudo tee /proc/sys/vm/drop_caches && sync && time ./cgc-cl
     * Completed milestone `1.3.0`.
 * 2018-10-12.2
     * Updated variables names used in cache functions.
+* 2018-11-05
+    * Reorganize milestone priorities.
+        * Prioritize PyPI support and changed milestone from target version `1.6.0` to `1.3.1`.
+        * Prioritize the milestone for only using native Python libraries for image processing.
+    * Completed milestone `1.3.1`.

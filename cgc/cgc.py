@@ -9,14 +9,13 @@ from os import listdir, makedirs
 from os.path import basename, exists, isdir
 from math import ceil
 from hashlib import sha512
-# image processing library
+# Image processing library.
 from PIL import Image
+import pkg_resources
 
 
 class CGC:
     """CGC provides methods for reformatting cards into printable sheets."""
-
-    cgc_version = "1.3.0"
 
     def __init__(self, tmp_dest_dir="/tmp/cgc", height_physical_inches=2.5,
                  width_physical_inches=3.5, log_level="INFO"):
@@ -50,10 +49,10 @@ class CGC:
             except IOError as e:
                 logging.critical("Failed to make temporary directories.\n%s", e)
 
-    @classmethod
-    def get_version(cls):
-        """Returns the CGC version string."""
-        return cls.cgc_version
+    @staticmethod
+    def get_version():
+        """Returns the CGC package version string."""
+        return pkg_resources.require("cgc")[0].version
 
     @staticmethod
     def find_first_image(images_dir):
