@@ -127,7 +127,8 @@ class CGC:
         logging.debug("convert command output: %s", str(cmd_return))
         return cmd_return
 
-    def image_rotate(self, image_path_src, image_path_dest, degrees=90):
+    @staticmethod
+    def image_rotate(image_path_src, image_path_dest, degrees=90):
         """Execute the convert command to rotate an image.
 
         Args:
@@ -138,8 +139,9 @@ class CGC:
             boolean: If the convert command completed successfully.
         """
         image = Image.open(image_path_src)
-        image_rotated = image.rotate(angle=90, expand=True)
+        image_rotated = image.rotate(angle=degrees, expand=True)
         image_rotated.save(image_path_dest)
+        image.close()
         return True
 
     def image_rotate_by_dimensions(self, image_path):
@@ -161,7 +163,8 @@ class CGC:
 
         return True
 
-    def image_density_change(self, image_path_src, image_path_dest, ppi):
+    @staticmethod
+    def image_density_change(image_path_src, image_path_dest, ppi):
         """Change the density of the pixels per inch of an image.
 
         Args:
@@ -334,7 +337,7 @@ class CGC:
                            card_file_name)
 
         if not self.image_density_change(image_path_src,
-                                          image_path_dest, ppi):
+                                         image_path_dest, ppi):
             return False
 
         if not self.image_rotate_by_dimensions(image_path_dest):
