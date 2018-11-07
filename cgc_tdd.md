@@ -22,8 +22,8 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
     * Input
         * image_path (str) = The full path to an image.
     * Outputs
-        * height (int)
         * width (int)
+        * height (int)
 * calc_ppi = Calculate and return the PPI for an image based on it's height and width.
     * Input
         * image_dimensions (list) = The resolution height and width of an image.

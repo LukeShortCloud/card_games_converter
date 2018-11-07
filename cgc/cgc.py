@@ -77,13 +77,13 @@ class CGC:
             image_path (str)
 
         Returns:
-            list: height, width
+            list: width, height
         """
 
         with Image.open(image_path) as image:
-            height, width = image.size
+            width, height = image.size
 
-        return height, width
+        return width, height
 
     def calc_ppi(self, image_dimensions):
         """Calculate the pixels per inch density based on the desired
@@ -91,13 +91,13 @@ class CGC:
         an image.
 
         Args:
-            image_dimensions (list): height, width
+            image_dimensions (list): width, height
 
         Returns:
             ppi (int)
         """
-        height_ppi = image_dimensions[0] / self.height_physical_inches
-        width_ppi = image_dimensions[1] / self.width_physical_inches
+        width_ppi = image_dimensions[0] / self.width_physical_inches
+        height_ppi = image_dimensions[1] / self.height_physical_inches
         logging.debug("Height PPI = %d, Width PPI = %d", height_ppi,
                       width_ppi)
         # Find the average PPI and round up.
@@ -151,9 +151,9 @@ class CGC:
         Returns:
             boolean: If the image was successfully rotated.
         """
-        height, width = self.image_info(image_path)
+        width, height = self.image_info(image_path)
 
-        if width > height:
+        if width < height:
             logging.debug("Rotating image: %s", image_path)
 
             if not self.image_rotate(image_path, image_path):

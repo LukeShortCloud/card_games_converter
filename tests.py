@@ -57,7 +57,7 @@ class CGCUnitTests(unittest.TestCase):
                 self.assertTrue(False)
 
     def test_calc_ppi(self):
-        image_dimensions = [260, 364]
+        image_dimensions = [364, 260]
         self.assertEqual(self.cgc.calc_ppi(image_dimensions), 104)
 
     def test_run_cmd(self):
@@ -82,7 +82,7 @@ class CGCUnitTests(unittest.TestCase):
     def test_image_rotate_by_dimensions(self):
         rotate_image = self.cgc.tmp_dest_dir + "/rotate.jpg"
         copyfile(self.last_image_card, rotate_image)
-        # Return a list of: height, width
+        # Return a list of: width, height
         rotate_image_original = self.cgc.image_info(rotate_image)
         return_status = self.cgc.image_rotate_by_dimensions(rotate_image)
         rotate_image_new = self.cgc.image_info(rotate_image)
@@ -91,10 +91,10 @@ class CGCUnitTests(unittest.TestCase):
             self.assertTrue(False)
 
         # Images only get rotated if the width is larger than the height.
-        if rotate_image_original[1] > rotate_image_original[0]:
+        if rotate_image_original[1] < rotate_image_original[0]:
             self.assertTrue(rotate_image_new[1] < rotate_image_new[0])
 
-        if rotate_image_original[1] < rotate_image_original[0]:
+        if rotate_image_original[1] > rotate_image_original[0]:
             self.assertTrue(rotate_image_new[1] < rotate_image_new[0])
 
     def test_image_density_change(self):
