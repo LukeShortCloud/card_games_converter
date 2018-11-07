@@ -52,7 +52,7 @@ The [Star Wars Trading Card Game (TCG)](http://starwars.wikia.com/wiki/Star_Wars
 Download the "Zipped Card JPGs" archive of an expansion pack of playing cards from [here](https://swtcgidc.wordpress.com/expansions-home/). Extract the archive and copy the desired cards to print into a different folder. Then use CGC to process the cards.
 
 ```
-./cgc-cli.py --src /home/user/Documents/cards_to_print/
+$ cgc-cli.py --src /home/user/Documents/cards_to_print/
 ```
 
 Printable pages of cards with the correct size and pixel density will be created and placed in the directory `/tmp/cgc/horizontal/`.
@@ -67,7 +67,7 @@ The cache modes decreases the amount of time to re-process similar images. It wa
 * sha512 = A checksum check to see if an image has been modified already.
 
 ```
-$ ./cgc-cli.py --cache name
+$ cgc-cli.py --cache name
 ```
 
 # Developers
