@@ -127,7 +127,7 @@ class CGC:
         logging.debug("convert command output: %s", str(cmd_return))
         return cmd_return
 
-    def image_rotate(self, image_path_src, image_path_dest, degrees="90"):
+    def image_rotate(self, image_path_src, image_path_dest, degrees=90):
         """Execute the convert command to rotate an image.
 
         Args:
@@ -138,23 +138,11 @@ class CGC:
             boolean: If the convert command completed successfully.
         """
         image = Image.open(image_path_src)
-        image_rotated = None
-
-        if degrees == "90":
-            image_rotated = image.transpose(Image.ROTATE_90)
-        elif degrees == "180":
-            image_rotated = image.transpose(Image.ROTATE_180)
-        elif degrees == "270":
-            image_rotated = image.transpose(Image.ROTATE_270)
-        else:
-            logging.error("Incorrect degrees specified. Please use " + \
-                          "90, 180, or 270.")
-            return False
-
+        image_rotated = image.rotate(angle=90, expand=True)
         image_rotated.save(image_path_dest)
         return True
 
-    def convert_rotate_by_dimensions(self, image_path):
+    def image_rotate_by_dimensions(self, image_path):
         """Rotate an image only if the width is greater than the height.
 
         Args:
@@ -349,7 +337,7 @@ class CGC:
                                           image_path_dest, ppi):
             return False
 
-        if not self.convert_rotate_by_dimensions(image_path_dest):
+        if not self.image_rotate_by_dimensions(image_path_dest):
             return False
 
         return True
@@ -357,7 +345,7 @@ class CGC:
     def convert_batch_directory(self, images_dir):
         """Convert an entire directory from a specified path to be
         a different density and rotate them if needed. (Both the
-        "image_density_change" and "convert_rotate_by_dimensions" methods
+        "image_density_change" and "image_rotate_by_dimensions" methods
         are used on each image.
 
         Args:

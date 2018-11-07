@@ -79,12 +79,12 @@ class CGCUnitTests(unittest.TestCase):
            (not return_status):
             self.assertTrue(False)
 
-    def test_convert_rotate_by_dimensions(self):
+    def test_image_rotate_by_dimensions(self):
         rotate_image = self.cgc.tmp_dest_dir + "/rotate.jpg"
         copyfile(self.last_image_card, rotate_image)
         # Return a list of: height, width
         rotate_image_original = self.cgc.image_info(rotate_image)
-        return_status = self.cgc.convert_rotate_by_dimensions(rotate_image)
+        return_status = self.cgc.image_rotate_by_dimensions(rotate_image)
         rotate_image_new = self.cgc.image_info(rotate_image)
 
         if not return_status:
