@@ -68,9 +68,9 @@ class CGCUnitTests(unittest.TestCase):
             and (convert_results["rc"] != 0):
             self.assertTrue(False)
 
-    def test_convert_rotate(self):
+    def test_image_rotate(self):
         image_dimensions_old = self.cgc.image_info(self.last_image_card)
-        return_status = self.cgc.convert_rotate(self.last_image_card,
+        return_status = self.cgc.image_rotate(self.last_image_card,
                                                 self.tmp_card)
         image_dimensions_new = self.cgc.image_info(self.tmp_card)
 

@@ -37,7 +37,7 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
             * rc (int) = Return code.
             * stdout (str bytes) = Standard output.
             * stderr (str bytes) = Standard error.
-* convert_rotate = Rotate an image.
+* image_rotate = Rotate an image.
     * Input
         * image_path (str) = The full image path to use.
     * Ouput

@@ -127,7 +127,7 @@ class CGC:
         logging.debug("convert command output: %s", str(cmd_return))
         return cmd_return
 
-    def convert_rotate(self, image_path_src, image_path_dest, degrees="90"):
+    def image_rotate(self, image_path_src, image_path_dest, degrees="90"):
         """Execute the convert command to rotate an image.
 
         Args:
@@ -137,12 +137,21 @@ class CGC:
         Returns:
             boolean: If the convert command completed successfully.
         """
-        cmd = ["convert", "-rotate", degrees, image_path_src,
-               image_path_dest]
+        image = Image.open(image_path_src)
+        image_rotated = None
 
-        if self.run_cmd(cmd)["rc"] != 0:
+        if degrees == "90":
+            image_rotated = image.transpose(Image.ROTATE_90)
+        elif degrees == "180":
+            image_rotated = image.transpose(Image.ROTATE_180)
+        elif degrees == "270":
+            image_rotated = image.transpose(Image.ROTATE_270)
+        else:
+            logging.error("Incorrect degrees specified. Please use " + \
+                          "90, 180, or 270.")
             return False
 
+        image_rotated.save(image_path_dest)
         return True
 
     def convert_rotate_by_dimensions(self, image_path):
@@ -159,7 +168,7 @@ class CGC:
         if width > height:
             logging.debug("Rotating image: %s", image_path)
 
-            if not self.convert_rotate(image_path, image_path):
+            if not self.image_rotate(image_path, image_path):
                 return False
 
         return True
