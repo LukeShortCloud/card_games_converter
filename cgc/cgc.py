@@ -173,7 +173,7 @@ class CGC:
 
         return True
 
-    def convert_image_density(self, image_path_src, image_path_dest, ppi):
+    def image_density_change(self, image_path_src, image_path_dest, ppi):
         """Change the density of the pixels per inch of an image.
 
         Args:
@@ -184,12 +184,8 @@ class CGC:
         Returns:
             boolean: If the convert density command finished successfully
         """
-        cmd = ["convert", "-units", "PixelsPerInch", "-density", str(ppi),
-               image_path_src, image_path_dest]
-
-        if self.run_cmd(cmd)["rc"] != 0:
-            return False
-
+        image = Image.open(image_path_src)
+        image.save(image_path_dest, dpi=(ppi, ppi))
         return True
 
     @staticmethod
@@ -349,7 +345,7 @@ class CGC:
         image_path_dest = (self.tmp_dir_individual + "/" +
                            card_file_name)
 
-        if not self.convert_image_density(image_path_src,
+        if not self.image_density_change(image_path_src,
                                           image_path_dest, ppi):
             return False
 
@@ -361,7 +357,7 @@ class CGC:
     def convert_batch_directory(self, images_dir):
         """Convert an entire directory from a specified path to be
         a different density and rotate them if needed. (Both the
-        "convert_image_density" and "convert_rotate_by_dimensions" methods
+        "image_density_change" and "convert_rotate_by_dimensions" methods
         are used on each image.
 
         Args:

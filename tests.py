@@ -97,9 +97,9 @@ class CGCUnitTests(unittest.TestCase):
         if rotate_image_original[1] < rotate_image_original[0]:
             self.assertTrue(rotate_image_new[1] < rotate_image_new[0])
 
-    def test_convert_image_density(self):
+    def test_image_density_change(self):
         # Set a temporary card to have the pixels per inch density of 104.
-        self.cgc.convert_image_density(self.last_image_card,
+        self.cgc.image_density_change(self.last_image_card,
                                        self.tmp_card, 104)
         cmd = ["identify", "-format", '%x', self.tmp_card]
         density_x_results = self.cgc.run_cmd(cmd)

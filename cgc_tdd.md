@@ -47,7 +47,7 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
         * image_path (src) = The full path to the image.
     * Ouput
         * boolean = If this method was successful.
-* convert_image_density = Convert a single image to a specific physical size density based on the PPI.
+* image_density_change = Convert a single image to a specific physical size density based on the PPI.
     * Inputs
         * image_path_src (str) = The full path to the source image to convert.
         * image_path_dest (str) = The full path to the destination image to save as.
