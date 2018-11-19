@@ -54,7 +54,7 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
         * ppi (int) = The desired pixels per inch density.
     * Ouput
         * boolean = If this method was successful.
-* convert_merge = Merge one or more images together either vertically or horizontally.
+* images_merge = Merge one or more images together either vertically or horizontally.
     * Inputs
         * convert_merge_method (str) = Append the images together in the "vertical" or "horizontal" direction
         * images_paths (list) = A list of all of the full image paths to append together.

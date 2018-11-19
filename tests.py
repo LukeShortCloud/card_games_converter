@@ -115,14 +115,14 @@ class CGCUnitTests(unittest.TestCase):
                          density_y_results["stdout"].decode()):
             self.assertTrue(False)
 
-    def test_convert_merge(self):
+    def test_images_merge(self):
         card_1 = self.cgc.tmp_src_dir + "/1.jpg"
         card_2 = self.cgc.tmp_src_dir + "/2.jpg"
         image_paths = [card_1, card_2]
         cards_merged_full_path = "/tmp/cgc/vertical/merged.jpg"
         cards_merged = basename(cards_merged_full_path)
 
-        if (not self.cgc.convert_merge("vertical", image_paths, cards_merged)) \
+        if (not self.cgc.images_merge("vertical", image_paths, cards_merged)) \
             or (not isfile(cards_merged_full_path)):
             self.assertTrue(False)
 
@@ -173,7 +173,6 @@ class CGCUnitTests(unittest.TestCase):
             self.assertTrue(False)
         elif return_status == False:
             self.assertTrue(False)
-
 
     def tearDown(self):
         rmtree(self.cards_source_dir)

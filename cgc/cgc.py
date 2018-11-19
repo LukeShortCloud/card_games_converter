@@ -141,7 +141,6 @@ class CGC:
         image = Image.open(image_path_src)
         image_rotated = image.rotate(angle=degrees, expand=True)
         image_rotated.save(image_path_dest)
-        image.close()
         return True
 
     def image_rotate_by_dimensions(self, image_path):
@@ -284,36 +283,66 @@ class CGC:
 
         return files_cache_invalid
 
-    def convert_merge(self, convert_merge_method, image_paths,
+    def images_merge(self, images_merge_method, image_paths,
                       merged_image_name="out.jpg"):
         """Merge one or more images either vertically or horizontally.
+        This requires that a new PIL image be created with the correct
+        dimensions and then have all of the images pasted in it with a
+        proper offset as to not overlap one another.
 
         Args:
-            convert_merge_method (str): vertical or horizontal
+            images_merge_method (str): vertical or horizontal
             image_paths (list)
             merged_image_name (str): the name to save the merged image as
 
         Returns:
-            boolean: If the convert merge command finished successfully
+            boolean: If the PIL image merge command finished successfully
         """
-        convert_merge_arg = ""
+        image_paths_open = []
+        image_heights = 0
+        image_widths = 0
+        merged_height = 0
+        merged_width = 0
+        image_heights_all = []
+        image_widths_all = []
 
-        if convert_merge_method == "vertical":
-            convert_merge_arg = "-append"
-        elif convert_merge_method == "horizontal":
-            convert_merge_arg = "+append"
+        for image in image_paths:
+            image_open = Image.open(image)
+            image_paths_open.append(image_open)
+            image_heights += image_open.height
+            image_heights_all.append(image_open.height)
+            image_widths += image_open.width
+            image_widths_all.append(image_open.width)
+
+        if images_merge_method == "vertical":
+            merged_height = image_heights
+            # Find and use the width of the first image.
+            #merged_width = image_paths_open[0].width
+            merged_width = max(image_widths_all)
+        elif images_merge_method == "horizontal":
+            # Find and use the height of the first image.
+            #merged_height = image_paths_open[0].height
+            merged_height = max(image_heights_all)
+            merged_width = image_widths
         else:
-            logging.error("Incorrect convert_merge_method specificed. \
+            logging.error("Incorrect images_merge_method specificed. \
                           Please use horizontal or vertical.")
             exit(1)
 
-        cmd = ["convert", convert_merge_arg, *image_paths,
-               self.tmp_dest_dir + "/" + convert_merge_method +
-               "/" + merged_image_name]
+        merged_image = Image.new("RGB", (merged_width, merged_height))
+        merged_pixel_offset = 0
 
-        if self.run_cmd(cmd)["rc"] != 0:
-            return False
+        for image in image_paths_open:
 
+            if images_merge_method == "vertical":
+                merged_image.paste(image, (0, merged_pixel_offset))
+                merged_pixel_offset += image.height
+            elif images_merge_method == "horizontal":
+                merged_image.paste(image, (merged_pixel_offset, 0))
+                merged_pixel_offset += image.width
+
+        merged_image.save(self.tmp_dest_dir + "/" + images_merge_method + \
+                          "/" + merged_image_name)
         return True
 
     def convert_single(self, image_path_src, ppi=None):
@@ -415,7 +444,7 @@ class CGC:
 
             if image_count >= image_count_max:
 
-                if not self.convert_merge(append_method, image_paths,
+                if not self.images_merge(append_method, image_paths,
                                           str(total_count) + ".jpg"):
                     return False
 
@@ -429,7 +458,7 @@ class CGC:
                 # remaining images.
                 if total_count == number_of_images:
 
-                    if not self.convert_merge(append_method, image_paths,
+                    if not self.images_merge(append_method, image_paths,
                                               str(total_count) + ".jpg"):
                         return False
 
