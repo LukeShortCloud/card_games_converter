@@ -6,10 +6,9 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 
 # Technologies
 
-* Python 3.6
-    * PIL
-* imagemagick
-* Linux
+* Python >= 3.6
+    * PIL (Pillow)
+* Linux, macOS, or Windows
 
 # Functions
 
@@ -22,39 +21,31 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
     * Input
         * image_path (str) = The full path to an image.
     * Outputs
-        * height (int)
         * width (int)
+        * height (int)
 * calc_ppi = Calculate and return the PPI for an image based on it's height and width.
     * Input
         * image_dimensions (list) = The resolution height and width of an image.
     * Ouput
         * ppi (int) = The pixels per inch density.
-* run_cmd = Execute a shell command.
-    * Input
-        * cmd (list) = A list of a command and arguments for it.
-    * Ouputs
-        * cmd_return (dict)
-            * rc (int) = Return code.
-            * stdout (str bytes) = Standard output.
-            * stderr (str bytes) = Standard error.
-* convert_rotate = Rotate an image.
+* image_rotate = Rotate an image.
     * Input
         * image_path (str) = The full image path to use.
     * Ouput
         * boolean = If this method was successful.
-* convert_rotate_by_dimensions = Rotate an image if the width is greater than the height. This allows for stacking of images for a printable page of 8 cards.
+* image_rotate_by_dimensions = Rotate an image if the width is greater than the height. This allows for stacking of images for a printable page of 8 cards.
     * Input
         * image_path (src) = The full path to the image.
     * Ouput
         * boolean = If this method was successful.
-* convert_image_density = Convert a single image to a specific physical size density based on the PPI.
+* image_density_change = Convert a single image to a specific physical size density based on the PPI.
     * Inputs
         * image_path_src (str) = The full path to the source image to convert.
         * image_path_dest (str) = The full path to the destination image to save as.
         * ppi (int) = The desired pixels per inch density.
     * Ouput
         * boolean = If this method was successful.
-* convert_merge = Merge one or more images together either vertically or horizontally.
+* images_merge = Merge one or more images together either vertically or horizontally.
     * Inputs
         * convert_merge_method (str) = Append the images together in the "vertical" or "horizontal" direction
         * images_paths (list) = A list of all of the full image paths to append together.
@@ -132,7 +123,7 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 | 1.2.0 | 8 | 2 |
 | 1.3.0 | 4 | 5 |
 | 1.3.1 | 4 | 1 |
-| 1.4.0 | 4 | |
+| 1.4.0 | 4 | 3 |
 | 1.5.0 | 4 | |
 | 2.0.0 | 40 | |
 
@@ -209,3 +200,5 @@ Commands: `$ echo 3 | sudo tee /proc/sys/vm/drop_caches && sync && time ./cgc-cl
         * Prioritize PyPI support and changed milestone from target version `1.6.0` to `1.3.1`.
         * Prioritize the milestone for only using native Python libraries for image processing.
     * Completed milestone `1.3.1`.
+* 2018-11-19
+    * Completed milestone `1.4.0`.

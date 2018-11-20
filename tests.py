@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
+import tempfile
 import unittest
 from os import listdir, makedirs, remove
 from os.path import basename, exists, isfile
 from shutil import copyfile, rmtree
+from PIL import Image
 import urllib.request
 import ssl
 from cgc.cgc import CGC
@@ -12,7 +14,7 @@ from cgc.cgc import CGC
 class CGCUnitTests(unittest.TestCase):
 
     def setUp(self):
-        self.tmp_root_dir = "/tmp"
+        self.tmp_root_dir = tempfile.gettempdir()
         self.cards_source_dir = self.tmp_root_dir + "/cards"
         self.last_image_card = self.tmp_root_dir + "/cards/9.jpg"
         self.example_card_url = "https://swtcgidc.files.wordpress.com/2018/08/card-of-the-week-bosb029_starkiller_base_b.jpg"
@@ -57,20 +59,12 @@ class CGCUnitTests(unittest.TestCase):
                 self.assertTrue(False)
 
     def test_calc_ppi(self):
-        image_dimensions = [260, 364]
+        image_dimensions = [364, 260]
         self.assertEqual(self.cgc.calc_ppi(image_dimensions), 104)
 
-    def test_run_cmd(self):
-        cmd_args = ["convert", "--version"]
-        convert_results = self.cgc.run_cmd(cmd_args)
-
-        if ("ImageMagick Studio LLC" not in str(convert_results["stdout"])) \
-            and (convert_results["rc"] != 0):
-            self.assertTrue(False)
-
-    def test_convert_rotate(self):
+    def test_image_rotate(self):
         image_dimensions_old = self.cgc.image_info(self.last_image_card)
-        return_status = self.cgc.convert_rotate(self.last_image_card,
+        return_status = self.cgc.image_rotate(self.last_image_card,
                                                 self.tmp_card)
         image_dimensions_new = self.cgc.image_info(self.tmp_card)
 
@@ -79,50 +73,43 @@ class CGCUnitTests(unittest.TestCase):
            (not return_status):
             self.assertTrue(False)
 
-    def test_convert_rotate_by_dimensions(self):
+    def test_image_rotate_by_dimensions(self):
         rotate_image = self.cgc.tmp_dest_dir + "/rotate.jpg"
         copyfile(self.last_image_card, rotate_image)
-        # Return a list of: height, width
+        # Return a list of: width, height
         rotate_image_original = self.cgc.image_info(rotate_image)
-        return_status = self.cgc.convert_rotate_by_dimensions(rotate_image)
+        return_status = self.cgc.image_rotate_by_dimensions(rotate_image)
         rotate_image_new = self.cgc.image_info(rotate_image)
 
         if not return_status:
             self.assertTrue(False)
 
         # Images only get rotated if the width is larger than the height.
-        if rotate_image_original[1] > rotate_image_original[0]:
-            self.assertTrue(rotate_image_new[1] < rotate_image_new[0])
-
         if rotate_image_original[1] < rotate_image_original[0]:
             self.assertTrue(rotate_image_new[1] < rotate_image_new[0])
 
-    def test_convert_image_density(self):
-        # Set a temporary card to have the pixels per inch density of 104.
-        self.cgc.convert_image_density(self.last_image_card,
-                                       self.tmp_card, 104)
-        cmd = ["identify", "-format", '%x', self.tmp_card]
-        density_x_results = self.cgc.run_cmd(cmd)
-        cmd = ["identify", "-format", '%y', self.tmp_card]
-        density_y_results = self.cgc.run_cmd(cmd)
+        if rotate_image_original[1] > rotate_image_original[0]:
+            self.assertTrue(rotate_image_new[1] < rotate_image_new[0])
 
-        # Check to make sure the commands completed successfully.
-        if (density_x_results["rc"] or density_y_results["rc"]) != 0:
-            self.assertTrue(False)
+    def test_image_density_change(self):
+        # Set a temporary card to have the pixels per inch density of 104.
+        self.cgc.image_density_change(self.last_image_card,
+                                      self.tmp_card, 104)
+        image = Image.open(self.tmp_card)
+        print("IMAGE DENSITY: {}".format(image.info["dpi"]))
 
         # Both the X and Y resolution dimensions should have the same density.
-        if "104" not in (density_x_results["stdout"].decode() or \
-                         density_y_results["stdout"].decode()):
+        if image.info["dpi"][0] != 104 or image.info["dpi"][1] != 104:
             self.assertTrue(False)
 
-    def test_convert_merge(self):
+    def test_images_merge(self):
         card_1 = self.cgc.tmp_src_dir + "/1.jpg"
         card_2 = self.cgc.tmp_src_dir + "/2.jpg"
         image_paths = [card_1, card_2]
-        cards_merged_full_path = "/tmp/cgc/vertical/merged.jpg"
+        cards_merged_full_path = "{}/cgc/vertical/merged.jpg".format(tempfile.gettempdir())
         cards_merged = basename(cards_merged_full_path)
 
-        if (not self.cgc.convert_merge("vertical", image_paths, cards_merged)) \
+        if (not self.cgc.images_merge("vertical", image_paths, cards_merged)) \
             or (not isfile(cards_merged_full_path)):
             self.assertTrue(False)
 
@@ -173,7 +160,6 @@ class CGCUnitTests(unittest.TestCase):
             self.assertTrue(False)
         elif return_status == False:
             self.assertTrue(False)
-
 
     def tearDown(self):
         rmtree(self.cards_source_dir)
