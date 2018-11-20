@@ -106,7 +106,7 @@ class CGCUnitTests(unittest.TestCase):
         card_1 = self.cgc.tmp_src_dir + "/1.jpg"
         card_2 = self.cgc.tmp_src_dir + "/2.jpg"
         image_paths = [card_1, card_2]
-        cards_merged_full_path = "/tmp/cgc/vertical/merged.jpg"
+        cards_merged_full_path = "{}/cgc/vertical/merged.jpg".format(tempfile.gettempdir())
         cards_merged = basename(cards_merged_full_path)
 
         if (not self.cgc.images_merge("vertical", image_paths, cards_merged)) \
