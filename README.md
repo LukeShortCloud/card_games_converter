@@ -8,8 +8,6 @@ This is aimed for use with independent and free card games that are intended for
 
 ## Installation
 
-Install ImageMagick and Python 3 on a Linux system.
-
 Stable CGC releases can be downloaded from [here](https://github.com/ekultails/card_games_converter/releases).
 
 ```
@@ -18,10 +16,10 @@ $ pip install --user cgc
 
 ## Usage
 
-* Create the directory `/tmp/cards/`.
+* Create the directory `/tmp/cards/` (Linux and macOS) or `C:\TEMP\cards\` (Windows).
 * Copy individual images of cards to be printed to that directory.
 * Execute the CGC program: `cgc-cli.py`
-* Print the resulting pages from `/tmp/cgc/horizontal/`.
+* Print the resulting pages from `/tmp/cgc/horizontal/` (Linux and macOS) or `C:\TEMP\cgc\horizontal\` (Windows).
 
 ### CLI
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import tempfile
 import unittest
 from os import listdir, makedirs, remove
 from os.path import basename, exists, isfile
@@ -13,7 +14,7 @@ from cgc.cgc import CGC
 class CGCUnitTests(unittest.TestCase):
 
     def setUp(self):
-        self.tmp_root_dir = "/tmp"
+        self.tmp_root_dir = tempfile.gettempdir()
         self.cards_source_dir = self.tmp_root_dir + "/cards"
         self.last_image_card = self.tmp_root_dir + "/cards/9.jpg"
         self.example_card_url = "https://swtcgidc.files.wordpress.com/2018/08/card-of-the-week-bosb029_starkiller_base_b.jpg"

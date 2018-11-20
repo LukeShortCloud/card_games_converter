@@ -6,9 +6,9 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 
 # Technologies
 
-* Python 3.6
+* Python >= 3.6
     * PIL (Pillow)
-* Linux
+* Linux, macOS, or Windows
 
 # Functions
 
