@@ -284,7 +284,7 @@ class CGC:
         return files_cache_invalid
 
     def images_merge(self, images_merge_method, image_paths,
-                      merged_image_name="out.jpg"):
+                     merged_image_name="out.jpg"):
         """Merge one or more images either vertically or horizontally.
         This requires that a new PIL image be created with the correct
         dimensions and then have all of the images pasted in it with a
@@ -445,7 +445,7 @@ class CGC:
             if image_count >= image_count_max:
 
                 if not self.images_merge(append_method, image_paths,
-                                          str(total_count) + ".jpg"):
+                                         str(total_count) + ".jpg"):
                     return False
 
                 # Reset the count and paths if 2 (horizontal) or 4 (veritcal)
@@ -459,7 +459,7 @@ class CGC:
                 if total_count == number_of_images:
 
                     if not self.images_merge(append_method, image_paths,
-                                              str(total_count) + ".jpg"):
+                                             str(total_count) + ".jpg"):
                         return False
 
         return True
