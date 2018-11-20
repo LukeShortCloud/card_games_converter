@@ -4,7 +4,6 @@
 """
 
 import logging
-import subprocess
 from os import listdir, makedirs
 from os.path import basename, exists, isdir
 from math import ceil
@@ -103,29 +102,6 @@ class CGC:
         # Find the average PPI and round up.
         ppi = ceil((height_ppi + width_ppi) / 2)
         return ppi
-
-    @staticmethod
-    def run_cmd(cmd):
-        """Execute a command.
-
-        Args:
-            cmd (list): a list of a command and arguments
-
-        Returns:
-            cmd_return (dict):
-                rc (int): return code
-                stdout (str bytes)
-                stderr (str bytes)
-        """
-        cmd_return = {"rc": None, "stdout": None, "stderr": None}
-        logging.debug("Running command: %s", " ".join(cmd))
-        convert_process = subprocess.Popen(cmd, stdout=subprocess.PIPE,
-                                           stderr=subprocess.PIPE)
-        cmd_return["stdout"], cmd_return["stderr"] = \
-            convert_process.communicate()
-        cmd_return["rc"] = int(convert_process.wait())
-        logging.debug("convert command output: %s", str(cmd_return))
-        return cmd_return
 
     @staticmethod
     def image_rotate(image_path_src, image_path_dest, degrees=90):

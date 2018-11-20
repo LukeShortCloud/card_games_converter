@@ -7,8 +7,7 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 # Technologies
 
 * Python 3.6
-    * PIL
-* imagemagick
+    * PIL (Pillow)
 * Linux
 
 # Functions
@@ -29,14 +28,6 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
         * image_dimensions (list) = The resolution height and width of an image.
     * Ouput
         * ppi (int) = The pixels per inch density.
-* run_cmd = Execute a shell command.
-    * Input
-        * cmd (list) = A list of a command and arguments for it.
-    * Ouputs
-        * cmd_return (dict)
-            * rc (int) = Return code.
-            * stdout (str bytes) = Standard output.
-            * stderr (str bytes) = Standard error.
 * image_rotate = Rotate an image.
     * Input
         * image_path (str) = The full image path to use.

@@ -4,6 +4,7 @@ import unittest
 from os import listdir, makedirs, remove
 from os.path import basename, exists, isfile
 from shutil import copyfile, rmtree
+from PIL import Image
 import urllib.request
 import ssl
 from cgc.cgc import CGC
@@ -60,14 +61,6 @@ class CGCUnitTests(unittest.TestCase):
         image_dimensions = [364, 260]
         self.assertEqual(self.cgc.calc_ppi(image_dimensions), 104)
 
-    def test_run_cmd(self):
-        cmd_args = ["convert", "--version"]
-        convert_results = self.cgc.run_cmd(cmd_args)
-
-        if ("ImageMagick Studio LLC" not in str(convert_results["stdout"])) \
-            and (convert_results["rc"] != 0):
-            self.assertTrue(False)
-
     def test_image_rotate(self):
         image_dimensions_old = self.cgc.image_info(self.last_image_card)
         return_status = self.cgc.image_rotate(self.last_image_card,
@@ -100,19 +93,12 @@ class CGCUnitTests(unittest.TestCase):
     def test_image_density_change(self):
         # Set a temporary card to have the pixels per inch density of 104.
         self.cgc.image_density_change(self.last_image_card,
-                                       self.tmp_card, 104)
-        cmd = ["identify", "-format", '%x', self.tmp_card]
-        density_x_results = self.cgc.run_cmd(cmd)
-        cmd = ["identify", "-format", '%y', self.tmp_card]
-        density_y_results = self.cgc.run_cmd(cmd)
-
-        # Check to make sure the commands completed successfully.
-        if (density_x_results["rc"] or density_y_results["rc"]) != 0:
-            self.assertTrue(False)
+                                      self.tmp_card, 104)
+        image = Image.open(self.tmp_card)
+        print("IMAGE DENSITY: {}".format(image.info["dpi"]))
 
         # Both the X and Y resolution dimensions should have the same density.
-        if "104" not in (density_x_results["stdout"].decode() or \
-                         density_y_results["stdout"].decode()):
+        if image.info["dpi"][0] != 104 or image.info["dpi"][1] != 104:
             self.assertTrue(False)
 
     def test_images_merge(self):
