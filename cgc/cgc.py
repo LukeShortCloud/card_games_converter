@@ -317,11 +317,9 @@ class CGC:
         if images_merge_method == "vertical":
             merged_height = image_heights
             # Find and use the width of the first image.
-            #merged_width = image_paths_open[0].width
             merged_width = max(image_widths_all)
         elif images_merge_method == "horizontal":
             # Find and use the height of the first image.
-            #merged_height = image_paths_open[0].height
             merged_height = max(image_heights_all)
             merged_width = image_widths
         else:
