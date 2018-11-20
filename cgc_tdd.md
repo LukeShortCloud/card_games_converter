@@ -123,7 +123,7 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 | 1.2.0 | 8 | 2 |
 | 1.3.0 | 4 | 5 |
 | 1.3.1 | 4 | 1 |
-| 1.4.0 | 4 | |
+| 1.4.0 | 4 | 3 |
 | 1.5.0 | 4 | |
 | 2.0.0 | 40 | |
 
@@ -200,3 +200,5 @@ Commands: `$ echo 3 | sudo tee /proc/sys/vm/drop_caches && sync && time ./cgc-cl
         * Prioritize PyPI support and changed milestone from target version `1.6.0` to `1.3.1`.
         * Prioritize the milestone for only using native Python libraries for image processing.
     * Completed milestone `1.3.1`.
+* 2018-11-19
+    * Completed milestone `1.4.0`.
