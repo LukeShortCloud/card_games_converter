@@ -133,10 +133,6 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 
 Fedora 28, Python 3.6.6, ImageMagick 6.9.9.38
 
-The Linux kernel I/O cache is first flushed before starting to test to prevent inaccurate and faster-than-expected results.
-
-Commands: `$ echo 3 | sudo tee /proc/sys/vm/drop_caches && sync && time ./cgc-cli.py $ARGS_CGC`
-
 | Description | Cache Type | Real Time |
 | ----------- | ---------- | --------- |
 | 100 cards | none | 0m35.940s |
@@ -145,6 +141,19 @@ Commands: `$ echo 3 | sudo tee /proc/sys/vm/drop_caches && sync && time ./cgc-cl
 | 1000 cards | none | 5m54.514s |
 | 1000 cards | name | 2m56.743s |
 | 1000 cards | sha512 | 2m57.687s |
+
+## CGC 1.4.0
+
+Fedora 28, Python 3.6.6, Pillow 5.3.0
+
+| Description | Cache Type | Real Time |
+| ----------- | ---------- | --------- |
+| 100 cards | none | 1m2.802s |
+| 100 cards | name | 0m29.803s |
+| 100 cards | sha512 | 0m30.201s |
+| 1000 cards | none | 10m37.549s |
+| 1000 cards | name | 4m58.222s |
+| 1000 cards | sha512 | 5m3.822s |
 
 # Lessons Learned
 
@@ -202,3 +211,5 @@ Commands: `$ echo 3 | sudo tee /proc/sys/vm/drop_caches && sync && time ./cgc-cl
     * Completed milestone `1.3.1`.
 * 2018-11-19
     * Completed milestone `1.4.0`.
+* 2018-11-28
+    * Added benchmarks for `1.4.0`.
