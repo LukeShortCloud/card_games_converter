@@ -5,7 +5,7 @@ import setuptools
 
 setuptools.setup(
     name="cgc",
-    version="1.4.0",
+    version="1.5.0",
     author="Luke Short",
     author_email="ekultails@gmail.com",
     url="https://github.com/ekultails/card_games_converter",
