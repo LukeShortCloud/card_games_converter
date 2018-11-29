@@ -63,6 +63,7 @@ The cache modes decreases the amount of time to re-process similar images. It wa
 
 * name = A simple cache to see if an image name has already been processed.
 * sha512 = A checksum check to see if an image has been modified already.
+* none (default) = A no-operation to explicitly not use caching.
 
 ```
 $ cgc-cli.py --cache name
