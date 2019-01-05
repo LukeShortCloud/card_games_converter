@@ -129,31 +129,35 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 
 # Cache Benchmarking
 
+Benchmark hardware:
+
+* Processor: Intel i7-8750H
+* RAM: x2 16GB 2400MHz DDR4
+* Storage: NVMe
+
+Benchmark software:
+
+* Fedora 28 docker container
+
 ## CGC 1.3.0
 
-Fedora 28, Python 3.6.6, ImageMagick 6.9.9.38
+Python 3.6.6, ImageMagick 6.9.9.38
 
 | Description | Cache Type | Real Time |
 | ----------- | ---------- | --------- |
-| 100 cards | none | 0m35.940s |
-| 100 cards | name | 0m17.027s |
-| 100 cards | sha512 | 0m17.500s |
-| 1000 cards | none | 5m54.514s |
-| 1000 cards | name | 2m56.743s |
-| 1000 cards | sha512 | 2m57.687s |
+| 100 cards | none | 0m42.924s |
+| 100 cards | name | 0m13.136s |
+| 100 cards | sha512 | 0m13.516s |
 
 ## CGC 1.4.0
 
-Fedora 28, Python 3.6.6, Pillow 5.3.0
+Python 3.6.6, Pillow 5.4.0
 
 | Description | Cache Type | Real Time |
 | ----------- | ---------- | --------- |
-| 100 cards | none | 1m2.802s |
-| 100 cards | name | 0m29.803s |
-| 100 cards | sha512 | 0m30.201s |
-| 1000 cards | none | 10m37.549s |
-| 1000 cards | name | 4m58.222s |
-| 1000 cards | sha512 | 5m3.822s |
+| 100 cards | none | 1m17.621s |
+| 100 cards | name | 0m36.618s |
+| 100 cards | sha512 | 0m36.954s |
 
 # Lessons Learned
 
