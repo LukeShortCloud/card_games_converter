@@ -5,6 +5,7 @@
 
 import logging
 import tempfile
+from multiprocessing import Queue, Process
 from os import listdir, makedirs
 from os.path import basename, exists, isdir
 from math import ceil
@@ -36,6 +37,7 @@ class CGC:
         self.tmp_dir_individual = self.tmp_dest_dir + "/individual"
         self.tmp_dir_horizontal = self.tmp_dest_dir + "/horizontal"
         self.tmp_dir_vertical = self.tmp_dest_dir + "/vertical"
+        self.queue = Queue()
 
         if not exists(self.tmp_dest_dir):
 
@@ -317,8 +319,9 @@ class CGC:
                 merged_image.paste(image, (merged_pixel_offset, 0))
                 merged_pixel_offset += image.width
 
-        merged_image.save(self.tmp_dest_dir + "/" + images_merge_method + \
-                          "/" + merged_image_name)
+        self.queue.put(merged_image.save("{}/{}/{}".format(self.tmp_dest_dir,
+                                                           images_merge_method,
+                                                           merged_image_name)))
         return True
 
     def convert_single(self, image_path_src, ppi=None):
@@ -366,6 +369,7 @@ class CGC:
         first_image_info = self.image_info(first_image)
         ppi = self.calc_ppi(first_image_info)
         image_paths_src = []
+        processes = []
 
         if self.cache_mode == "name":
             image_paths_src = self.cache_mode_name()
@@ -379,7 +383,13 @@ class CGC:
         for image_path_src in image_paths_src:
 
             if not isdir(image_path_src):
-                self.convert_single(image_path_src, ppi)
+                convert_single_p = Process(target=self.convert_single,
+                                           args=(image_path_src, ppi))
+                processes.append(convert_single_p)
+                convert_single_p.start()
+
+        for process in processes:
+            process.join()
 
         return True
 
@@ -412,6 +422,7 @@ class CGC:
         image_paths = []
         number_of_images = len(images)
         logging.debug("Number of total images found: %s", str(number_of_images))
+        processes = []
 
         for image in images:
             total_count += 1
@@ -419,11 +430,11 @@ class CGC:
             image_paths.append(tmp_dir_append + "/" + image)
 
             if image_count >= image_count_max:
-
-                if not self.images_merge(append_method, image_paths,
-                                         str(total_count) + ".jpg"):
-                    return False
-
+                images_merge_p = Process(target=self.images_merge,
+                                         args=(append_method, image_paths,
+                                               str(total_count) + ".jpg"))
+                processes.append(images_merge_p)
+                images_merge_p.start()
                 # Reset the count and paths if 2 (horizontal) or 4 (veritcal)
                 # cards have been processed already.
                 image_count = 0
@@ -437,6 +448,9 @@ class CGC:
                     if not self.images_merge(append_method, image_paths,
                                              str(total_count) + ".jpg"):
                         return False
+
+        for process in processes:
+            process.join()
 
         return True
 
