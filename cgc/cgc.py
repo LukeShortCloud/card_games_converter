@@ -3,6 +3,7 @@
    printable format
 """
 
+from sys import exit as sys_exit
 import logging
 import tempfile
 from multiprocessing import Queue, Process
@@ -305,7 +306,7 @@ class CGC:
         else:
             logging.error("Incorrect images_merge_method specificed. \
                           Please use horizontal or vertical.")
-            exit(1)
+            sys_exit(1)
 
         merged_image = Image.new("RGB", (merged_width, merged_height))
         merged_pixel_offset = 0
