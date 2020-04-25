@@ -2,8 +2,10 @@
 """A command-line interface utility for managing Card Games Converter (CGC)."""
 
 from argparse import ArgumentParser
+from os.path import join
 from sys import stderr
 from cgc.cgc import CGC
+import tempfile
 
 
 def main():
@@ -11,7 +13,7 @@ def main():
     initializing a CGC object.
     """
     log_level_arg = "INFO"
-    tmp_dest_dir_arg = "/tmp/cgc"
+    tmp_dest_dir_arg = join(tempfile.gettempdir(), "cgc")
     parser = ArgumentParser()
     parser.add_argument("--src", help="the source directory")
     parser.add_argument("--dest", help="the destination directory")

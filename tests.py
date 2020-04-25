@@ -3,7 +3,7 @@
 import tempfile
 import unittest
 from os import listdir, makedirs, remove
-from os.path import basename, exists, isfile
+from os.path import basename, exists, isfile, join
 from shutil import copyfile, rmtree
 from PIL import Image
 import urllib.request
@@ -15,8 +15,8 @@ class CGCUnitTests(unittest.TestCase):
 
     def setUp(self):
         self.tmp_root_dir = tempfile.gettempdir()
-        self.cards_source_dir = self.tmp_root_dir + "/cards"
-        self.last_image_card = self.tmp_root_dir + "/cards/9.jpg"
+        self.cards_source_dir = join(self.tmp_root_dir, "cards")
+        self.last_image_card = join(self.tmp_root_dir, "cards", "9.jpg")
         self.example_card_url = "https://swtcgidc.files.wordpress.com/2018/08/card-of-the-week-bosb029_starkiller_base_b.jpg"
 
         if not exists(self.cards_source_dir):
@@ -30,11 +30,11 @@ class CGCUnitTests(unittest.TestCase):
 
         # Copy the image 8 times (for a total of 9 images).
         for count in range(1, 9):
-            copyfile(self.last_image_card, self.cards_source_dir + "/" \
-                     + str(count) + ".jpg")
+            copyfile(self.last_image_card, join(self.cards_source_dir,
+                                                str(count) + ".jpg"))
 
         self.cgc = CGC(log_level="DEBUG")
-        self.tmp_card = self.cgc.tmp_dest_dir + "/123.jpg"
+        self.tmp_card = join(self.cgc.tmp_dest_dir, "123.jpg")
 
     def test_find_first_image(self):
         return_status = False
@@ -43,7 +43,7 @@ class CGCUnitTests(unittest.TestCase):
         # The first card found can actually be any file in the directory
         # since it is not sorted (and does not need to be sorted).
         for image in listdir(self.cards_source_dir):
-            image_name_full = self.cards_source_dir + "/" + image
+            image_name_full = join(self.cards_source_dir, image)
 
             if image_name_full == first_image_found:
                 return_status = True
@@ -74,7 +74,7 @@ class CGCUnitTests(unittest.TestCase):
             self.assertTrue(False)
 
     def test_image_rotate_by_dimensions(self):
-        rotate_image = self.cgc.tmp_dest_dir + "/rotate.jpg"
+        rotate_image = join(self.cgc.tmp_dest_dir, "rotate.jpg")
         copyfile(self.last_image_card, rotate_image)
         # Return a list of: width, height
         rotate_image_original = self.cgc.image_info(rotate_image)
@@ -103,10 +103,10 @@ class CGCUnitTests(unittest.TestCase):
             self.assertTrue(False)
 
     def test_images_merge(self):
-        card_1 = self.cgc.tmp_src_dir + "/1.jpg"
-        card_2 = self.cgc.tmp_src_dir + "/2.jpg"
+        card_1 = join(self.cgc.tmp_src_dir, "1.jpg")
+        card_2 = join(self.cgc.tmp_src_dir, "2.jpg")
         image_paths = [card_1, card_2]
-        cards_merged_full_path = "{}/cgc/vertical/merged.jpg".format(tempfile.gettempdir())
+        cards_merged_full_path = join(tempfile.gettempdir(), "cgc", "vertical", "merged.jpg")
         cards_merged = basename(cards_merged_full_path)
 
         if (not self.cgc.images_merge("vertical", image_paths, cards_merged)) \
@@ -120,9 +120,9 @@ class CGCUnitTests(unittest.TestCase):
         if cache_mode == "name" or cache_mode == "sha512":
             self.cgc.cache_mode = cache_mode
 
-        test_image_src = self.cgc.tmp_src_dir + "/single.jpg"
-        test_image_dest = self.cgc.tmp_dir_individual + "/single.jpg"
-        copyfile(self.cgc.tmp_src_dir + "/1.jpg", test_image_src)
+        test_image_src = join(self.cgc.tmp_src_dir, "single.jpg")
+        test_image_dest = join(self.cgc.tmp_dir_individual, "single.jpg")
+        copyfile(join(self.cgc.tmp_src_dir, "1.jpg"), test_image_src)
 
         if not self.cgc.convert_single(test_image_src):
             self.assertTrue(False)

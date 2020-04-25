@@ -8,7 +8,7 @@ import logging
 import tempfile
 from multiprocessing import Queue, Process
 from os import listdir, makedirs
-from os.path import basename, exists, isdir
+from os.path import basename, exists, isdir, join
 from math import ceil
 from hashlib import sha512
 # Image processing library.
@@ -19,7 +19,7 @@ import pkg_resources
 class CGC:
     """CGC provides methods for reformatting cards into printable sheets."""
 
-    def __init__(self, tmp_dest_dir="{}/cgc".format(tempfile.gettempdir()),
+    def __init__(self, tmp_dest_dir=join(tempfile.gettempdir(), "cgc"),
                  height_physical_inches=2.5,
                  width_physical_inches=3.5, log_level="INFO"):
         """Initialize CGC by creating temporary directories
@@ -33,25 +33,27 @@ class CGC:
         self.cache_mode = None
         self.height_physical_inches = height_physical_inches
         self.width_physical_inches = width_physical_inches
-        self.tmp_src_dir = "{}/cards".format(tempfile.gettempdir())
+        self.tmp_src_dir = join(tempfile.gettempdir(), "cards")
         self.tmp_dest_dir = tmp_dest_dir
-        self.tmp_dir_individual = self.tmp_dest_dir + "/individual"
-        self.tmp_dir_horizontal = self.tmp_dest_dir + "/horizontal"
-        self.tmp_dir_vertical = self.tmp_dest_dir + "/vertical"
+        self.tmp_dir_individual = join(self.tmp_dest_dir, "individual")
+        self.tmp_dir_horizontal = join(self.tmp_dest_dir, "horizontal")
+        self.tmp_dir_vertical = join(self.tmp_dest_dir, "vertical")
+        self.cgc_managed_dirs = [self.tmp_dest_dir, self.tmp_dir_individual,
+                                 self.tmp_dir_horizontal, self.tmp_dir_vertical]
         self.queue = Queue()
 
         if not exists(self.tmp_dest_dir):
 
             try:
-                makedirs(self.tmp_dest_dir)
-                makedirs(self.tmp_dir_individual)
-                makedirs(self.tmp_dir_horizontal)
-                makedirs(self.tmp_dir_vertical)
+
+                for new_dir in self.cgc_managed_dirs:
+                    makedirs(new_dir)
+
             # Disable a false-positive error about the variable name "e"
             # not being valid snake_case.
             # pylint: disable=C0103
             except IOError as e:
-                logging.critical("Failed to make temporary directories.\n%s", e)
+                logging.critical("Failed to create all temporary directories.\n%s", e)
 
     @staticmethod
     def get_version():
@@ -69,7 +71,7 @@ class CGC:
             first_image (str)
         """
         first_image_name = listdir(images_dir)[0]
-        first_image = images_dir + "/" + first_image_name
+        first_image = join(images_dir, first_image_name)
         logging.debug("First image found: %s", first_image)
         return first_image
 
@@ -171,7 +173,7 @@ class CGC:
         """
 
         for file in listdir(src):
-            yield src + "/" + file
+            yield join(src, file)
 
     def cache_mode_name(self, src_dir=None, dest_dir=None):
         """Use a cache by comparing file names from a source and destination
@@ -207,7 +209,7 @@ class CGC:
                     src_file_found = True
 
             if not src_file_found:
-                files_cache_invalid.append(src_dir + "/" + src_file)
+                files_cache_invalid.append(join(src_dir, src_file))
 
         logging.debug("Cache is invalid for: %s", files_cache_invalid)
         return files_cache_invalid
@@ -238,7 +240,7 @@ class CGC:
         dest_hash = ""
 
         for src_file in listdir(src_dir):
-            src_full_path = src_dir + "/" + src_file
+            src_full_path = join(src_dir, src_file)
 
             for dest_full_path in dest_full_paths:
 
@@ -320,9 +322,9 @@ class CGC:
                 merged_image.paste(image, (merged_pixel_offset, 0))
                 merged_pixel_offset += image.width
 
-        self.queue.put(merged_image.save("{}/{}/{}".format(self.tmp_dest_dir,
-                                                           images_merge_method,
-                                                           merged_image_name)))
+        self.queue.put(merged_image.save(join(self.tmp_dest_dir,
+                                              images_merge_method,
+                                              merged_image_name)))
         return True
 
     def convert_single(self, image_path_src, ppi=None):
@@ -342,8 +344,7 @@ class CGC:
             ppi = self.calc_ppi(image_dimensions)
 
         card_file_name = basename(image_path_src)
-        image_path_dest = (self.tmp_dir_individual + "/" +
-                           card_file_name)
+        image_path_dest = join(self.tmp_dir_individual, card_file_name)
 
         if not self.image_density_change(image_path_src,
                                          image_path_dest, ppi):
@@ -379,7 +380,7 @@ class CGC:
         else:
 
             for image in listdir(images_dir):
-                image_paths_src.append(images_dir + "/" + image)
+                image_paths_src.append(join(images_dir, image))
 
         for image_path_src in image_paths_src:
 
@@ -428,7 +429,7 @@ class CGC:
         for image in images:
             total_count += 1
             image_count += 1
-            image_paths.append(tmp_dir_append + "/" + image)
+            image_paths.append(join(tmp_dir_append, image))
 
             if image_count >= image_count_max:
                 images_merge_p = Process(target=self.images_merge,

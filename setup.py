@@ -14,6 +14,6 @@ setuptools.setup(
     classifiers=["Programming Language :: Python :: 3 :: Only"],
     packages=["cgc"],
     license="http://www.apache.org/licenses/LICENSE-2.0",
-    install_requires=["Pillow"],
+    install_requires=["img2pdf", "Pillow"],
     scripts=["bin/cgc-cli.py"]
 )
