@@ -1,6 +1,6 @@
 [DESIGN]
 # Maximum object variables.
-max-attributes=10
+max-attributes=15
 # Maximum local variables.
 # Default: 15
 max-locals=16

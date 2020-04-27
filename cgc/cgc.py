@@ -11,6 +11,7 @@ from os import listdir, makedirs
 from os.path import basename, exists, isdir, join
 from math import ceil
 from hashlib import sha512
+import img2pdf
 # Image processing library.
 from PIL import Image
 import pkg_resources
@@ -38,8 +39,10 @@ class CGC:
         self.tmp_dir_individual = join(self.tmp_dest_dir, "individual")
         self.tmp_dir_horizontal = join(self.tmp_dest_dir, "horizontal")
         self.tmp_dir_vertical = join(self.tmp_dest_dir, "vertical")
+        self.tmp_dir_pdfs = join(self.tmp_dest_dir, "pdfs")
         self.cgc_managed_dirs = [self.tmp_dest_dir, self.tmp_dir_individual,
-                                 self.tmp_dir_horizontal, self.tmp_dir_vertical]
+                                 self.tmp_dir_horizontal, self.tmp_dir_vertical,
+                                 self.tmp_dir_pdfs]
         self.queue = Queue()
 
         if not exists(self.tmp_dest_dir):
@@ -456,6 +459,24 @@ class CGC:
 
         return True
 
+    def convert_to_pdf(self):
+        """Convert all images from the horizontal directory into PDFs.
+
+        Args:
+            None
+        """
+        images = listdir(self.tmp_dir_horizontal)
+        count = 0
+
+        for image_name in images:
+            pdf_data = img2pdf.convert(join(self.tmp_dir_horizontal, image_name))
+            file = open(join(self.tmp_dir_pdfs, str(count) + ".pdf"), "wb")
+            file.write(pdf_data)
+            file.close()
+            count += 1
+
+        return True
+
     def convert_batch_append_all(self):
         """Merge all individual cards into a printable set. The cards are
         assumed to have already had their density changed and have been
@@ -476,6 +497,9 @@ class CGC:
             return False
 
         if not self.convert_batch_append(append_method="horizontal"):
+            return False
+
+        if not self.convert_to_pdf():
             return False
 
         return True

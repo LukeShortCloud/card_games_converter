@@ -150,6 +150,7 @@ class CGCUnitTests(unittest.TestCase):
         self.cgc.convert_batch_append_all()
         listdir_vertical = listdir(self.cgc.tmp_dir_vertical)
         listdir_horizontal = listdir(self.cgc.tmp_dir_horizontal)
+        listdir_pdfs = listdir(self.cgc.tmp_dir_pdfs)
 
         # There should be 3 vertical images (each with 1, 4, and 4 images).
         if len(listdir_vertical) != 3:
@@ -159,6 +160,9 @@ class CGCUnitTests(unittest.TestCase):
         elif len(listdir_horizontal) != 2:
             self.assertTrue(False)
         elif return_status == False:
+            self.assertTrue(False)
+
+        if len(listdir_pdfs) != 2:
             self.assertTrue(False)
 
     def tearDown(self):
