@@ -8,7 +8,7 @@ This is aimed for use with independent and free card games that are intended for
 
 ## Installation
 
-Stable CGC releases can be downloaded from [here](https://github.com/ekultails/card_games_converter/releases).
+Install a modern version of [Python 3](https://www.python.org/downloads/). Python 3.6 and above is supported. Stable CGC releases can be manually downloaded from [here](https://github.com/ekultails/card_games_converter/releases). Alternatively, use `pip` to automatically install CGC.
 
 ```
 $ pip install --user cgc
@@ -20,6 +20,18 @@ $ pip install --user cgc
 * Copy individual images of cards to be printed to that directory.
 * Execute the CGC program: `cgc-cli.py`
 * Print the resulting pages from `/tmp/cgc/horizontal/` (Linux and macOS) or `C:\TEMP\cgc\horizontal\` (Windows).
+    * PDF files for each "horizontal" image are saved to `/tmp/cgc/pdfs/`.
+
+### Printing
+
+#### LibreOffice Writer Document
+
+Insert the image to the document and ensure it is the correct size.
+
+```
+Insert > Image... > Open
+(right click on the image) > Properties... > Width: 7" Height: 10" > OK
+```
 
 ### CLI
 
