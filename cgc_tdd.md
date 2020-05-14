@@ -89,6 +89,11 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
         * dest_dir (str) = The destination directory to compare the source against.
     * Output
         * list = A list of cards that are missing or do not have matching SHA512 checksums.
+* convert_to_pdf = Convert all horizontal images into a PDF file.
+    * Inputs
+       * None.
+    * Output
+        * boolean = If this method was successful.
 
 # CLI Arguments (cgc-cli)
 
@@ -111,7 +116,7 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 * 1.3.0 = Caching is supported. Processing of individual images can be skipped by comparing the original and processed images. The check can use a name or a SHA512 checksum.
 * 1.3.1 = PyPI package support.
 * 1.4.0 = Image rotating and density resizing is handled by the Python PIL library instead of the `convert` command.
-* 1.5.0 = Parallel processing is added.
+* 1.5.0 = Parallel processing is added. PDFs are created.
 * 2.0.0 = API v1 is implemented.
 
 # Development Time
@@ -124,7 +129,7 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 | 1.3.0 | 4 | 5 |
 | 1.3.1 | 4 | 1 |
 | 1.4.0 | 4 | 3 |
-| 1.5.0 | 4 | |
+| 1.5.0 | 4 | 4 |
 | 2.0.0 | 40 | |
 
 # Cache Benchmarking
@@ -217,3 +222,6 @@ Python 3.6.6, Pillow 5.4.0
     * Completed milestone `1.4.0`.
 * 2018-11-28
     * Added benchmarks for `1.4.0`.
+* 2020-05-14
+    * Added PDF file creation as a `1.5` milestone.
+    * Completed milestone `1.5.0`.
