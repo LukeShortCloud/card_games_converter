@@ -165,6 +165,19 @@ class CGCUnitTests(unittest.TestCase):
         if len(listdir_pdfs) != 2:
             self.assertTrue(False)
 
+    def test_gamma_change(self):
+       original_gamma = self.cgc.get_gamma('foo.jpg')
+       self.cgc.update_gamma('foo.jpg', 22)
+       new_gamma = self.cgc.get_gamma('foo.jpg')
+       self.assertEquals(original_gamma, new_gamma)
+
+    def test_add_bleed(self):
+        original_size = self.cgc.image_info('bar.jpg')
+        self.cgc.add_bleed('bar.jpg')
+        new_size = self.cgc.image_info('bar.jpg')
+        assert(new_size[0] > original_size[0])
+        assert(new_size[1] > original_size[1])
+
     def tearDown(self):
         rmtree(self.cards_source_dir)
         rmtree(self.cgc.tmp_dest_dir)
