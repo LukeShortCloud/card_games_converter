@@ -6,6 +6,7 @@
 from sys import exit as sys_exit
 import logging
 import tempfile
+import numpy
 from multiprocessing import Queue, Process
 from os import listdir, makedirs
 from os.path import basename, exists, isdir, join
@@ -355,6 +356,13 @@ class CGC:
 
         if not self.image_rotate_by_dimensions(image_path_dest):
             return False
+
+        image = numpy.array(Image.open(image_path_dest))
+        gamma_correction_factor = 1.22
+        image_gamma_corrected = (
+            255.0 * (image / 255.0)**(1 / gamma_correction_factor))
+        image_encoded = Image.fromarray(numpy.uint8(image_gamma_corrected))
+        image_encoded.save(image_path_dest)
 
         return True
 
