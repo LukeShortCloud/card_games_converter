@@ -94,6 +94,23 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
        * None.
     * Output
         * boolean = If this method was successful.
+* get_gamma = View the current gamma (brightness) level of an image.
+    * Inputs
+        * img_path (str) = File path to an image.
+    * Outputs
+        * gamma (int) = The current gamma level of an image.
+* update_gamma = Change the gamma (brightness) of an image.
+    * Inputs
+        * img_path (str) = File path to an image.
+        * gamma (int) = Percentage to increase it by.
+    * Outputs
+        * boolean = If this method was successful.
+* add_bleed = Add a black border around an image.
+    * Inputs
+        * img_path (str) = File path to an image.
+        * size (float) = The size, in milimeters, of a black border that will be added to the picture.
+    * Outputs
+        * boolean = If this method was successful.
 
 # CLI Arguments (cgc-cli)
 
@@ -107,6 +124,7 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 * --cache {name|sha512} = The cache mode to use. Requires the use of `--no-clean`.
     * name = Use the image name to see if a temporary modified image exists.
     * sha512 = Use a checksum to see if an image has been modified already.
+* --swtcg = Automatically apply settings required for printing the Star Wars Trading Card Game originally created by the Wizards of the Coast. This will set the card size to 63mm by 88mm, increase the brightness, and create a bleed area/border of 0.125 inch.
 
 # Milestones
 
@@ -117,7 +135,8 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 * 1.3.1 = PyPI package support.
 * 1.4.0 = Image rotating and density resizing is handled by the Python PIL library instead of the `convert` command.
 * 1.5.0 = Parallel processing is added. PDFs are created.
-* 2.0.0 = API v1 is implemented.
+* 1.6.0 = More accurate SWTCG support.
+* 2.0.0 = RESTful API v1 is implemented.
 
 # Development Time
 
@@ -130,6 +149,7 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
 | 1.3.1 | 4 | 1 |
 | 1.4.0 | 4 | 3 |
 | 1.5.0 | 4 | 4 |
+| 1.6.0 | 4 | |
 | 2.0.0 | 40 | |
 
 # Cache Benchmarking
@@ -225,3 +245,5 @@ Python 3.6.6, Pillow 5.4.0
 * 2020-05-14
     * Added PDF file creation as a `1.5` milestone.
     * Completed milestone `1.5.0`.
+* 2020-11-03
+    * Add new milestone `1.6.0` to add better SWTCG support.
