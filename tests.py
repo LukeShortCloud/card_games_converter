@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from hashlib import sha512
 import tempfile
 import unittest
 from os import listdir, makedirs, remove
@@ -17,20 +18,21 @@ class CGCUnitTests(unittest.TestCase):
         self.tmp_root_dir = tempfile.gettempdir()
         self.cards_source_dir = join(self.tmp_root_dir, "cards")
         self.last_image_card = join(self.tmp_root_dir, "cards", "9.jpg")
+        self.original_image_card = join(self.tmp_root_dir, "original.jpg")
         self.example_card_url = "https://swtcgidc.files.wordpress.com/2018/08/card-of-the-week-bosb029_starkiller_base_b.jpg"
 
         if not exists(self.cards_source_dir):
             makedirs(self.cards_source_dir)
 
-        if not exists(self.last_image_card):
+        if not exists(self.original_image_card):
             # The certificate reports false-positive errors.
             ssl._create_default_https_context = ssl._create_unverified_context
             urllib.request.urlretrieve(self.example_card_url,
-                                       self.last_image_card)
+                                       self.original_image_card)
 
-        # Copy the image 8 times (for a total of 9 images).
-        for count in range(1, 9):
-            copyfile(self.last_image_card, join(self.cards_source_dir,
+        # Copy the image 9 times (for a total of 9 images).
+        for count in range(1, 10):
+            copyfile(self.original_image_card, join(self.cards_source_dir,
                                                 str(count) + ".jpg"))
 
         self.cgc = CGC(log_level="DEBUG")
@@ -165,11 +167,27 @@ class CGCUnitTests(unittest.TestCase):
         if len(listdir_pdfs) != 2:
             self.assertTrue(False)
 
-    def test_gamma_change(self):
-       original_gamma = self.cgc.get_gamma('foo.jpg')
-       self.cgc.update_gamma('foo.jpg', 22)
-       new_gamma = self.cgc.get_gamma('foo.jpg')
-       self.assertEquals(original_gamma, new_gamma)
+    def test_update_gamma(self):
+        gamma_test_files = [
+            {"file": join(self.tmp_root_dir + "/gamma_positive.jpg"),
+            "offset": 3.33,
+            "sha512": "ddc5b697bfbebeb266147559589510d5137007fd6fdd74554ce38bf6f331f85ac1e58a42c618b50c883d94221c01f62c8fd60ad2f1f183bce2fccc17dd8002e7"},
+            {"file": join(self.tmp_root_dir + "/gamma_negative.jpg"),
+            "offset": -3.33,
+            "sha512": "614a848149e205e5c99460dc45de7fbeed0fa2cac79c77dea8d85800726967c87e133e8b78bb05e08ab08a07013d618aec2504a57789b173604115f294f3bab5"},
+            {"file": join(self.tmp_root_dir + "/gamma_zero.jpg"),
+             "offset": 0.0,
+             "sha512": "74971777d8955323c97ae095735c0fc4542aa0f63cf3a9b8ad788a2fce43e3b296c6c80173a14a43a30f098675488732b60625583b90a9f63701dc0bd00c00cd"}]
+        for test_file in gamma_test_files:
+            copyfile(self.original_image_card, test_file["file"])
+            self.cgc.update_gamma(test_file["file"], test_file["offset"])
+
+            with open(test_file["file"], "rb") as f:
+                # The SHA512 checksums are pre-determined. If the original
+                # test file is ever updated then these checksums need to be
+                # regenerated.
+                self.assertEquals(sha512(f.read()).hexdigest(),
+                    test_file["sha512"])
 
     def test_add_bleed(self):
         original_size = self.cgc.image_info('bar.jpg')

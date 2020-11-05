@@ -44,6 +44,7 @@ class CGC:
         self.cgc_managed_dirs = [self.tmp_dest_dir, self.tmp_dir_individual,
                                  self.tmp_dir_horizontal, self.tmp_dir_vertical,
                                  self.tmp_dir_pdfs]
+        self.gamma_offset = 0
         self.queue = Queue()
 
         if not exists(self.tmp_dest_dir):
@@ -178,6 +179,36 @@ class CGC:
 
         for file in listdir(src):
             yield join(src, file)
+
+    def update_gamma(self, img_path, gamma_offset):
+        """Update the gamma offset of an image to change the brightness. Use
+        a negative number to brighten the image or a positive number to darken
+        the image.
+
+        Args:
+            img_path (str): The path to the image file.
+            gamma_offset (float): The gamma offset to apply to the image.
+
+        Returns:
+            boolean: If the function completed successfully.
+        """
+
+        image = numpy.array(Image.open(img_path))
+
+        # The gamma correction equation is different based on if it is an
+        # even or odd number.
+        if gamma_offset > 0:
+            image_gamma_corrected = (
+                255.0 * (image / 255.0)**gamma_offset)
+        elif gamma_offset < 0:
+            image_gamma_corrected = (
+                255.0 * (image / 255.0)**(1 / abs(gamma_offset)))
+        else:
+            return True
+
+        image_encoded = Image.fromarray(numpy.uint8(image_gamma_corrected))
+        image_encoded.save(img_path)
+        return True
 
     def cache_mode_name(self, src_dir=None, dest_dir=None):
         """Use a cache by comparing file names from a source and destination
@@ -357,13 +388,7 @@ class CGC:
         if not self.image_rotate_by_dimensions(image_path_dest):
             return False
 
-        image = numpy.array(Image.open(image_path_dest))
-        gamma_correction_factor = 1.22
-        image_gamma_corrected = (
-            255.0 * (image / 255.0)**(1 / gamma_correction_factor))
-        image_encoded = Image.fromarray(numpy.uint8(image_gamma_corrected))
-        image_encoded.save(image_path_dest)
-
+        self.update_gamma(image_path_dest, self.gamma_offset)
         return True
 
     def convert_batch_directory(self, images_dir):

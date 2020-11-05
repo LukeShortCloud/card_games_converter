@@ -17,6 +17,8 @@ def main():
     parser = ArgumentParser()
     parser.add_argument("--src", help="the source directory")
     parser.add_argument("--dest", help="the destination directory")
+    parser.add_argument("--gamma", help="set a gamma offset (negative to "
+                        "brighten or positive to darken)", type=float)
     parser.add_argument("--ppi-height", help="the desired height in inches",
                         type=int)
     parser.add_argument("--ppi-width", help="the desired width in inches",
@@ -59,6 +61,9 @@ def main():
                          "No cache will be used.")
         else:
             cgc.cache_mode = args.cache
+
+    if args.gamma:
+        cgc.gamma_offset = args.gamma
 
     # The last argument to process is to see what action should be done
     # (processing one or all cards).
