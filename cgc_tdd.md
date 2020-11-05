@@ -94,15 +94,10 @@ The "Card Games Converter" (CGC) is a utility for converting pictures of cards i
        * None.
     * Output
         * boolean = If this method was successful.
-* get_gamma = View the current gamma (brightness) level of an image.
-    * Inputs
-        * img_path (str) = File path to an image.
-    * Outputs
-        * gamma (int) = The current gamma level of an image.
 * update_gamma = Change the gamma (brightness) of an image.
     * Inputs
         * img_path (str) = File path to an image.
-        * gamma (int) = Percentage to increase it by.
+        * gamma_offset (int) = Percentage to increase it by.
     * Outputs
         * boolean = If this method was successful.
 * add_bleed = Add a black border around an image.
@@ -247,3 +242,6 @@ Python 3.6.6, Pillow 5.4.0
     * Completed milestone `1.5.0`.
 * 2020-11-03
     * Add new milestone `1.6.0` to add better SWTCG support.
+* 2020-11-04
+    * Remove `get_gamma` function from the technical design document. It is not possible to calculate the original gamma value. The only way to possibly do this is to cache the original image in memory which is a very expensive, and potentially time consuming, operation.
+    * Rename `update_gamma` argument to be more meaningful: `gamma_offset` instead of `gamma`.
